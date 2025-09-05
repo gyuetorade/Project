@@ -1,95 +1,124 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/loginCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:backgroundTint="@android:color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-<ImageView
-    android:id="@+id/imgLogo"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:src="@drawable/logo"
-    android:contentDescription="App Logo"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:layout_marginTop="40dp" />
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="FoodTok"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgLogo" />
 
-    <!-- Title -->
-<TextView
-android:id="@+id/tvTitle"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="FoodTok"
-android:textSize="24sp"
-android:textStyle="bold"
-android:textColor="@android:color/black"
-app:layout_constraintTop_toBottomOf="@id/imgLogo"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-android:layout_marginTop="12dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-    <!-- Login Card -->
-<androidx.cardview.widget.CardView
-android:id="@+id/loginCard"
-android:layout_width="0dp"
-android:layout_height="wrap_content"
-app:cardCornerRadius="16dp"
-app:cardElevation="8dp"
-android:backgroundTint="@android:color/white"
-app:layout_constraintTop_toBottomOf="@id/tvTitle"
-app:layout_constraintStart_toStartOf="parent"
-app:layout_constraintEnd_toEndOf="parent"
-android:layout_marginTop="24dp">
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="20dp">
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+
+            android:contentDescription="App Logo"
+
+            android:src="@drawable/logo" />
+        />
+
+        <TextView
+            android:id="@+id/tvLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="50dp"
+            android:text="Login"
+
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+
+
+    </androidx.cardview.widget.CardView>
 
     <EditText
         android:id="@+id/etUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
-        android:drawablePadding="8dp"
         android:backgroundTint="@color/black"
-        android:padding="12dp" />
+        android:drawablePadding="8dp"
+        android:hint="Username"
+        android:padding="12dp"
+        tools:layout_editor_absoluteX="-54dp"
+        tools:layout_editor_absoluteY="607dp" />
 
     <EditText
         android:id="@+id/etPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/black"
+        android:drawablePadding="8dp"
         android:hint="Password"
         android:inputType="textPassword"
-        android:drawablePadding="8dp"
-        android:backgroundTint="@color/black"
         android:padding="12dp"
-        android:layout_marginTop="12dp" />
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="517dp" />
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
         android:backgroundTint="@color/material_dynamic_primary10"
+        android:text="Login"
         android:textColor="@android:color/white"
-        android:layout_marginTop="16dp" />
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="260dp" />
 
     <TextView
         android:id="@+id/tvRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Don't have an account? Register"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:layout_marginTop="12dp"
-        android:layout_gravity="center_horizontal" />
+        tools:layout_editor_absoluteX="3dp"
+        tools:layout_editor_absoluteY="671dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="148dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        tools:layout_editor_absoluteX="18dp"
+        tools:layout_editor_absoluteY="308dp">
 
 </LinearLayout>
-</androidx.cardview.widget.CardView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
