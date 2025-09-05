@@ -2,6 +2,7 @@ package com.example.project;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +17,13 @@ public class landingpage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landingpage);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
 
+
+        Button btnGetStarted = findViewById(R.id.btnGetStarted);
+        btnGetStarted.setOnClickListener(v -> {
             Intent intent = new Intent(landingpage.this, LoginActivity.class);
             startActivity(intent);
             finish();
-            return WindowInsetsCompat.CONSUMED;
-
         });
     }
 }
