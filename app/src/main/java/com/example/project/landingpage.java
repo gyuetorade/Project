@@ -21,7 +21,7 @@ public class landingpage extends AppCompatActivity {
 
         Button btnGetStarted = findViewById(R.id.btnGetStarted);
         btnGetStarted.setOnClickListener(v -> {
-            Intent intent = new Intent(landingpage.this, LoginActivity.class);
+            Intent intent = new Intent(landingpage.this, AuthActivity.class);
             startActivity(intent);
             finish();
         });
