@@ -17,8 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:cardUseCompatPadding="false"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
         app:strokeColor="@android:color/transparent"
         app:cardBackgroundColor="@android:color/white"
         app:shapeAppearanceOverlay="@style/CardBottomRounded">
