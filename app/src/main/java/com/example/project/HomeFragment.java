@@ -21,7 +21,6 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ImageButton btnLike = view.findViewById(R.id.btnLike);
         ImageButton btnComment = view.findViewById(R.id.btnComment);
-        Button btnMenu = view.findViewById(R.id.btnMenu);
 
         TextView tvLikeCount = view.findViewById(R.id.tvLikeCount);
         final int[] likeCount = {0};
@@ -35,8 +34,5 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(getActivity(), MessagingActivity.class))
         );
 
-        btnMenu.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), MenuActivity.class))
-        );
     }
 }
