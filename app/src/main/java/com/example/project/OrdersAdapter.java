@@ -28,16 +28,18 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.VH> {
         OrderItem item = items.get(pos);
         h.img.setImageResource(item.imageRes);
         h.name.setText(item.name);
-        h.price.setText("\u20b1" + item.price);
+        h.price.setText("\u20b1" + (item.price * item.quantity));
         h.qty.setText(String.valueOf(item.quantity));
         h.plus.setOnClickListener(v -> {
             item.quantity++;
             h.qty.setText(String.valueOf(item.quantity));
+            h.price.setText("\u20b1" + (item.price * item.quantity));
         });
         h.minus.setOnClickListener(v -> {
             if (item.quantity > 1) {
                 item.quantity--;
                 h.qty.setText(String.valueOf(item.quantity));
+                h.price.setText("\u20b1" + (item.price * item.quantity));
             }
         });
     }
