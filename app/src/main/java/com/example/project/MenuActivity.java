@@ -27,7 +27,7 @@ public class MenuActivity extends AppCompatActivity {
         findViewById(R.id.btnAddMilkTea).setOnClickListener(v -> addToCart("Milk Tea", 90));
 
         Button btnViewCart = findViewById(R.id.btnViewCart);
-        btnViewCart.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
+        btnViewCart.setOnClickListener(v -> startActivity(new Intent(this, FoodDetailActivity.class)));
     }
 
     private void addToCart(String item, int price) {
