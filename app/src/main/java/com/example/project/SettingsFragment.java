@@ -9,7 +9,7 @@ public class SettingsFragment extends Fragment {
     public SettingsFragment() { super(R.layout.fragment_settings); }
     @Override public void onViewCreated(android.view.View v, @Nullable Bundle b){
         v.findViewById(R.id.btnLogout).setOnClickListener(view -> {
-            v.getContext().startActivity(new Intent(v.getContext(), LoginActivity.class));
+            v.getContext().startActivity(new Intent(v.getContext(), AuthActivity.class));
         });
     }
 }

@@ -6,4 +6,7 @@
     </style>
 
     <style name="Theme.Project" parent="Base.Theme.Project" />
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Other theme attributes -->
+    </style>
 </resources>
