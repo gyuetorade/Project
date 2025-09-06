@@ -5,37 +5,53 @@
     android:orientation="vertical"
     android:padding="24dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email Address"
+        android:textColor="#7C7C7C"
+        android:textSize="14sp"
+        android:layout_marginTop="15dp" />
 
     <EditText
         android:id="@+id/etNewUsername"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Email address"
         android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:backgroundTint="@android:color/darker_gray" />
+        android:textColor="@android:color/black"
+        android:backgroundTint="@android:color/black" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Password"
+        android:textColor="#7C7C7C"
+        android:textSize="14sp"
+        android:layout_marginTop="15dp" />
 
     <EditText
         android:id="@+id/etNewPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Password"
         android:inputType="textPassword"
-        android:padding="12dp"
-        android:backgroundTint="@android:color/darker_gray"
-        android:layout_marginTop="16dp" />
+        android:textColor="@android:color/black"
+        android:backgroundTint="@android:color/black" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm Password"
+        android:textColor="#7C7C7C"
+        android:textSize="14sp"
+        android:layout_marginTop="15dp" />
 
     <EditText
         android:id="@+id/etConfirmPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Confirm Password"
         android:inputType="textPassword"
-        android:padding="12dp"
-        android:backgroundTint="@android:color/darker_gray"
-        android:layout_marginTop="16dp" />
+        android:textColor="@android:color/black"
+        android:backgroundTint="@android:color/black" />
 
 
     <Button
@@ -44,7 +60,7 @@
         android:layout_height="wrap_content"
         android:text="Create account"
         android:textAllCaps="false"
-        android:backgroundTint="@android:color/holo_orange_dark"
+        android:backgroundTint="#FA4A0C"
         android:textColor="@android:color/white"
         android:layout_marginTop="24dp" />
 
