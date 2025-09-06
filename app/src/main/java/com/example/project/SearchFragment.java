@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,6 +22,7 @@ public class SearchFragment extends Fragment {
         EditText etSearch = view.findViewById(R.id.etSearch);
         Button btnSearch = view.findViewById(R.id.btnSearch);
         LinearLayout foodList = view.findViewById(R.id.foodList);
+        TextView noResult = view.findViewById(R.id.noResult);
 
         btnSearch.setOnClickListener(v -> {
             String query = etSearch.getText().toString().trim().toLowerCase();
@@ -37,6 +39,7 @@ public class SearchFragment extends Fragment {
                                 .getChildAt(0)).getChildAt(0)).getText().toString().toLowerCase();
 
                 card.setVisibility(cardText.contains(query) ? View.VISIBLE : View.GONE);
+                noResult.setVisibility(foodList.getVisibility() == View.GONE ? View.GONE : View.VISIBLE);
             }
         });
     }
