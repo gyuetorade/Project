@@ -21,6 +21,8 @@
             android:id="@+id/toolbar"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:backgroundTint="@android:color/black"
+            app:backgroundTint="@android:color/black"
             android:background="@drawable/backarrow" />
 
         <TextView
@@ -160,11 +162,13 @@
                     android:id="@+id/rbDoorDelivery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:buttonTint="@color/orange"
                     android:text="Door Delivery"
                     android:checked="true" />
 
                 <RadioButton
                     android:id="@+id/rbPickUp"
+                    android:buttonTint="@color/orange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pick Up" />
