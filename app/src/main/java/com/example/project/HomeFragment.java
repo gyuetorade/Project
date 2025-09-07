@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
             tvLikeCount.setText(String.valueOf(likeCount));
 
             btnLike.setImageResource(R.drawable.hearty);
-            Toast.makeText(getContext(), "Removed From Favorite", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Unlike", Toast.LENGTH_SHORT).show();
         }
     }
 }
