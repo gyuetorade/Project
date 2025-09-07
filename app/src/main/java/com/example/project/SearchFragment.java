@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,17 @@ public class SearchFragment extends Fragment {
         Button btnSearch = view.findViewById(R.id.btnSearch);
         LinearLayout foodList = view.findViewById(R.id.foodList);
         TextView noResult = view.findViewById(R.id.noResult);
+
+        setupCardClick(view.findViewById(R.id.cardSpicyChickens),
+                R.drawable.fried_chicken, R.id.foodName1);
+        setupCardClick(view.findViewById(R.id.cardVeggieTomato),
+                R.drawable.veggie_tomato, R.id.foodName2);
+        setupCardClick(view.findViewById(R.id.cardEggCucumber),
+                R.drawable.egg_cucumber, R.id.foodName3);
+        setupCardClick(view.findViewById(R.id.cardFriedChicken),
+                R.drawable.fried_chicken, R.id.foodName4);
+        setupCardClick(view.findViewById(R.id.cardMoiMoiEkpa),
+                R.drawable.moi_moi, R.id.foodName5);
 
         btnSearch.setOnClickListener(v -> {
             String query = etSearch.getText().toString().trim().toLowerCase();
@@ -106,5 +118,17 @@ public class SearchFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private void setupCardClick(CardView cardView, int imageRes, int nameViewId) {
+        if (cardView == null) return;
+        cardView.setOnClickListener(v -> {
+            TextView nameView = cardView.findViewById(nameViewId);
+            String name = nameView != null ? nameView.getText().toString() : "";
+            Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("images", new int[]{imageRes});
+            startActivity(intent);
+        });
     }
 }
