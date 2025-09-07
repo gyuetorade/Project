@@ -40,6 +40,7 @@ public class HomeFragment extends Fragment {
         btnMenu.setOnClickListener(v -> {
             com.example.project.MenuBottomSheet sheet = new com.example.project.MenuBottomSheet();
             sheet.show(getParentFragmentManager(), "MenuBottomSheet");
+
         });
 
         btnFollow.setOnClickListener(v -> {
