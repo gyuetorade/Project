@@ -12,6 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".OrderActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SecurityActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PrivacyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ListOfferActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Profile"
+            android:exported="false" />
+        <activity
             android:name=".FoodDetailActivity"
             android:exported="false" />
         <activity
@@ -32,7 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MessagingActivity"
             android:exported="false" />
@@ -45,7 +59,6 @@
         <activity
             android:name=".CartActivity"
             android:exported="false" />
-
     </application>
 
 </manifest>
