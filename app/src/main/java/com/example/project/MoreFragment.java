@@ -119,9 +119,9 @@ public class MoreFragment extends Fragment {
 
 
     private void loadProfileData() {
-        tvName.setText(profile.getString("name", "Marvis Ighedosa"));
-        tvEmail.setText(profile.getString("email", "Dosamarvis@gmail.com"));
-        tvPhone.setText(profile.getString("phone", "+234 9011039271"));
-        tvAddress.setText(profile.getString("address", "No 15 uti street off ovie palace road effurun delta state"));
+        tvName.setText(profile.getString("name", "Ken Caandoy"));
+        tvEmail.setText(profile.getString("email", "kencaandoy@gmail.com"));
+        tvPhone.setText(profile.getString("phone", "+63 978 8741 212"));
+        tvAddress.setText(profile.getString("address", ""));
     }
 }
