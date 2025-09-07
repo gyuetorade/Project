@@ -22,19 +22,25 @@ public class MenuActivity extends AppCompatActivity {
 
         cart = getSharedPreferences("Cart", MODE_PRIVATE);
 
-        findViewById(R.id.btnAddBurger).setOnClickListener(v -> addToCart("Burger", 120));
-        findViewById(R.id.btnAddFries).setOnClickListener(v -> addToCart("Fries", 60));
-        findViewById(R.id.btnAddMilkTea).setOnClickListener(v -> addToCart("Milk Tea", 90));
+        findViewById(R.id.btnAddBurger).setOnClickListener(v -> addToCart("Burger", 120, R.drawable.moi_moi));
+        findViewById(R.id.btnAddFries).setOnClickListener(v -> addToCart("Fries", 60, R.drawable.egg_cucumber));
+        findViewById(R.id.btnAddMilkTea).setOnClickListener(v -> addToCart("Milk Tea", 90, R.drawable.veggie_tomato));
 
         Button btnViewCart = findViewById(R.id.btnViewCart);
-        btnViewCart.setOnClickListener(v -> startActivity(new Intent(this, FoodDetailActivity.class)));
+        btnViewCart.setOnClickListener(v -> startActivity(new Intent(this, CartActivity.class)));
     }
 
-    private void addToCart(String item, int price) {
-        int qty = cart.getInt(item, 0);
-        cart.edit().putInt(item, qty + 1).apply();
+    private void addToCart(String item, int price, int imageRes) {
+        int qty = cart.getInt(item + "_qty", 0) + 1;
+        java.util.Set<String> items = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
+        items.add(item);
 
-        int total = cart.getInt("TOTAL", 0);
-        cart.edit().putInt("TOTAL", total + price).apply();
+        cart.edit()
+                .putStringSet("ITEMS", items)
+                .putInt(item + "_qty", qty)
+                .putInt(item + "_price", price)
+                .putInt(item + "_image", imageRes)
+                .putInt("TOTAL", cart.getInt("TOTAL", 0) + price)
+                .apply();
     }
 }
