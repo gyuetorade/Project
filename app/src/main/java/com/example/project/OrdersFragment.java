@@ -129,8 +129,13 @@ public class OrdersFragment extends Fragment {
 
         // Initial add to cart
         subtotal += price;
+        java.util.Set<String> items = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
+        items.add(keyName);
         cart.edit()
-                .putInt(keyName, 1)
+                .putStringSet("ITEMS", items)
+                .putInt(keyName + "_qty", 1)
+                .putInt(keyName + "_price", price)
+                .putInt(keyName + "_image", imageResId)
                 .putInt("TOTAL", subtotal)
                 .apply();
         updateSummary();
@@ -139,8 +144,13 @@ public class OrdersFragment extends Fragment {
             int qty = Integer.parseInt(tvQty.getText().toString()) + 1;
             tvQty.setText(String.valueOf(qty));
             subtotal += price;
+            java.util.Set<String> itemsPlus = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
+            itemsPlus.add(keyName);
             cart.edit()
-                    .putInt(keyName, qty)
+                    .putStringSet("ITEMS", itemsPlus)
+                    .putInt(keyName + "_qty", qty)
+                    .putInt(keyName + "_price", price)
+                    .putInt(keyName + "_image", imageResId)
                     .putInt("TOTAL", subtotal)
                     .apply();
             updateSummary();
@@ -153,7 +163,7 @@ public class OrdersFragment extends Fragment {
                 tvQty.setText(String.valueOf(qty));
                 subtotal -= price;
                 cart.edit()
-                        .putInt(keyName, qty)
+                        .putInt(keyName + "_qty", qty)
                         .putInt("TOTAL", subtotal)
                         .apply();
                 updateSummary();

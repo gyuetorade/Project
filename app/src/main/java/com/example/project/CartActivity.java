@@ -102,26 +102,31 @@ public class CartActivity extends AppCompatActivity {
     private void renderCart() {
         cartContainer.removeAllViews();
 
-        int burgerQty = cart.getInt("Burger", 0);
-        int friesQty = cart.getInt("Fries", 0);
-        int milkTeaQty = cart.getInt("Milk Tea", 0);
+        java.util.Set<String> items = cart.getStringSet("ITEMS", new java.util.HashSet<>());
+        int total = 0;
+        boolean hasItems = false;
 
-        int total = cart.getInt("TOTAL", 0);
+        for (String name : items) {
+            int qty = cart.getInt(name + "_qty", 0);
+            int price = cart.getInt(name + "_price", 0);
+            int image = cart.getInt(name + "_image", R.drawable.ic_food_placeholder);
 
-        if (burgerQty + friesQty + milkTeaQty == 0) {
+            if (qty > 0) {
+                hasItems = true;
+                addCartCard(name, price, qty, image);
+                total += price * qty;
+            }
+        }
+
+        if (!hasItems) {
             TextView empty = new TextView(this);
             empty.setText("Your cart is empty.");
             empty.setTextSize(16f);
             cartContainer.addView(empty);
-            tvTotalAmount.setText("Total: ₱0");
-            return;
         }
 
-        if (burgerQty > 0) addCartCard("Burger", 120, burgerQty, R.drawable.moi_moi);
-        if (friesQty > 0) addCartCard("Fries", 60, friesQty, R.drawable.egg_cucumber);
-        if (milkTeaQty > 0) addCartCard("Milk Tea", 90, milkTeaQty, R.drawable.veggie_tomato);
-
         tvTotalAmount.setText("Total: ₱" + total);
+        cart.edit().putInt("TOTAL", total).apply();
     }
 
     private void addCartCard(String name, int price, int qty, int imageRes) {
@@ -203,13 +208,12 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void updateCart(String name, int price, int qtyChange) {
-        int currentQty = cart.getInt(name, 0) + qtyChange;
-        int currentTotal = cart.getInt("TOTAL", 0) + (price * qtyChange);
+        int currentQty = cart.getInt(name + "_qty", 0) + qtyChange;
 
-        cart.edit()
-                .putInt(name, currentQty)
-                .putInt("TOTAL", currentTotal)
-                .apply();
+        SharedPreferences.Editor editor = cart.edit();
+        editor.putInt(name + "_qty", currentQty);
+        editor.putInt("TOTAL", cart.getInt("TOTAL", 0) + (price * qtyChange));
+        editor.apply();
 
         renderCart();
     }
