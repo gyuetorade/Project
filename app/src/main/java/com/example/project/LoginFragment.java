@@ -42,6 +42,7 @@ public class LoginFragment extends Fragment {
 
             if (username.equals(savedUser) && password.equals(savedPass)) {
                 Toast.makeText(getContext(), "Logging in...", Toast.LENGTH_SHORT).show();
+                prefs.edit().putBoolean("isLoggedIn", true).apply();
 
                 new Handler().postDelayed(() -> {
                     startActivity(new Intent(getActivity(), MainActivity.class));

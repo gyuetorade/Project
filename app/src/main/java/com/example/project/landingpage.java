@@ -1,6 +1,7 @@
 package com.example.project;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -15,6 +16,13 @@ public class landingpage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = getSharedPreferences("UserData", MODE_PRIVATE);
+        if (prefs.getBoolean("isLoggedIn", false)) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_landingpage);
 
