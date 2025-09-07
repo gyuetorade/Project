@@ -1,77 +1,173 @@
 package com.example.project;
 
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
+import android.view.ViewGroup;
+import android.widget.*;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class OrdersFragment extends Fragment {
-    public OrdersFragment() { super(R.layout.fragment_orders); }
 
-       @Override public void onViewCreated(View v, @Nullable Bundle b) {
-        ImageButton back = v.findViewById(R.id.btnBack);
-        back.setOnClickListener(view -> requireActivity().onBackPressed());
-
-        RecyclerView rv = v.findViewById(R.id.rvOrders);
-        List<OrderItem> items = new ArrayList<>();
-        items.add(new OrderItem(R.drawable.img, "Veggie tomato mix", 1900));
-        items.add(new OrderItem(R.drawable.other, "Fishwith mix orange....", 1900));
-        OrdersAdapter adapter = new OrdersAdapter(items);
-        rv.setLayoutManager(new LinearLayoutManager(getContext()));
-        rv.setAdapter(adapter);
-
-        ItemTouchHelper helper = new ItemTouchHelper(new SwipeToDeleteCallback(adapter));
-        helper.attachToRecyclerView(rv);
+    public OrdersFragment() {
+        super(R.layout.fragment_orders);
     }
 
-    private static class SwipeToDeleteCallback extends ItemTouchHelper.SimpleCallback {
-        private final OrdersAdapter adapter;
-        private final Paint paint = new Paint();
+    private LinearLayout orderContainer;
+    private TextView tvSubtotal, tvDelivery, tvDiscount, tvTotal;
+    private Button btnPlaceOrder;
 
-        SwipeToDeleteCallback(OrdersAdapter adapter) {
-            super(0, ItemTouchHelper.LEFT);
-            this.adapter = adapter;
-            paint.setColor(0xFFFF3B30);
-        }
+    private int deliveryCharge = 10;
+    private int discount = 10;
+    private int subtotal = 0;
 
-        @Override public boolean onMove(RecyclerView rv, RecyclerView.ViewHolder vh, RecyclerView.ViewHolder target) { return false; }
+    private SharedPreferences cart;
 
-        @Override public void onSwiped(RecyclerView.ViewHolder vh, int direction) {
-            adapter.removeAt(vh.getBindingAdapterPosition());
-        }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        orderContainer = view.findViewById(R.id.orderContainer);
+        tvSubtotal = view.findViewById(R.id.tvSubtotal);
+        tvDelivery = view.findViewById(R.id.tvDelivery);
+        tvDiscount = view.findViewById(R.id.tvDiscount);
+        tvTotal = view.findViewById(R.id.tvTotal);
+        btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder);
 
-        @Override
-        public void onChildDraw(Canvas c, RecyclerView rv, RecyclerView.ViewHolder vh, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                View itemView = vh.itemView;
-                RectF background = new RectF(itemView.getRight() + dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                c.drawRect(background, paint);
+        cart = requireContext().getSharedPreferences("Cart", Context.MODE_PRIVATE);
+        cart.edit().clear().apply(); // start fresh
 
-                android.graphics.drawable.Drawable icon =
-                        ContextCompat.getDrawable(rv.getContext(), android.R.drawable.ic_menu_delete);
-                if (icon != null) {
-                    int margin = (itemView.getHeight() - icon.getIntrinsicHeight()) / 2;
-                    int left = itemView.getRight() - margin - icon.getIntrinsicWidth();
-                    int right = itemView.getRight() - margin;
-                    int top = itemView.getTop() + margin;
-                    int bottom = top + icon.getIntrinsicHeight();
-                    icon.setBounds(left, top, right, bottom);
-                    icon.draw(c);
-                }
+        // Add sample items
+        addOrderCard("Burger", "Burger Factory LTD", 120, R.drawable.moi_moi);
+        addOrderCard("Fries", "Pizza Palace", 60, R.drawable.egg_cucumber);
+        addOrderCard("Milk Tea", "Hot Cool Spot", 90, R.drawable.veggie_tomato);
+
+        updateSummary();
+
+        // ✅ FIX: Place My Order → CartActivity
+        btnPlaceOrder.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), CartActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void addOrderCard(String keyName, String place, int price, int imageResId) {
+        Context context = requireContext();
+
+        CardView card = new CardView(context);
+        card.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        card.setRadius(16f);
+        card.setCardElevation(8f);
+        card.setUseCompatPadding(true);
+        card.setPadding(16, 16, 16, 16);
+
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setGravity(Gravity.CENTER_VERTICAL);
+
+        ImageView img = new ImageView(context);
+        img.setImageResource(imageResId);
+        img.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
+        img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        LinearLayout info = new LinearLayout(context);
+        info.setOrientation(LinearLayout.VERTICAL);
+        info.setPadding(16, 0, 0, 0);
+        info.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+
+        TextView tvName = new TextView(context);
+        tvName.setText(keyName);
+        tvName.setTextSize(16f);
+        tvName.setTypeface(null, Typeface.BOLD);
+
+        TextView tvPlace = new TextView(context);
+        tvPlace.setText(place);
+        tvPlace.setTextSize(14f);
+
+        TextView tvPrice = new TextView(context);
+        tvPrice.setText("₱" + price);
+        tvPrice.setTextSize(14f);
+
+        info.addView(tvName);
+        info.addView(tvPlace);
+        info.addView(tvPrice);
+
+        LinearLayout qtyControl = new LinearLayout(context);
+        qtyControl.setOrientation(LinearLayout.HORIZONTAL);
+
+        ImageButton btnMinus = new ImageButton(context);
+        btnMinus.setImageResource(R.drawable.minus);
+        btnMinus.setBackground(null);
+
+        TextView tvQty = new TextView(context);
+        tvQty.setText("1");
+        tvQty.setPadding(8, 0, 8, 0);
+        tvQty.setTextSize(16f);
+
+        ImageButton btnPlus = new ImageButton(context);
+        btnPlus.setImageResource(R.drawable.add);
+        btnPlus.setBackground(null);
+
+        qtyControl.addView(btnMinus);
+        qtyControl.addView(tvQty);
+        qtyControl.addView(btnPlus);
+
+        layout.addView(img);
+        layout.addView(info);
+        layout.addView(qtyControl);
+        card.addView(layout);
+        orderContainer.addView(card);
+
+        // Initial add to cart
+        subtotal += price;
+        cart.edit()
+                .putInt(keyName, 1)
+                .putInt("TOTAL", subtotal)
+                .apply();
+        updateSummary();
+
+        btnPlus.setOnClickListener(v -> {
+            int qty = Integer.parseInt(tvQty.getText().toString()) + 1;
+            tvQty.setText(String.valueOf(qty));
+            subtotal += price;
+            cart.edit()
+                    .putInt(keyName, qty)
+                    .putInt("TOTAL", subtotal)
+                    .apply();
+            updateSummary();
+        });
+
+        btnMinus.setOnClickListener(v -> {
+            int qty = Integer.parseInt(tvQty.getText().toString());
+            if (qty > 1) {
+                qty--;
+                tvQty.setText(String.valueOf(qty));
+                subtotal -= price;
+                cart.edit()
+                        .putInt(keyName, qty)
+                        .putInt("TOTAL", subtotal)
+                        .apply();
+                updateSummary();
             }
-            super.onChildDraw(c, rv, vh, dX, dY, actionState, isCurrentlyActive);
-        }
+        });
+    }
+
+    private void updateSummary() {
+        tvSubtotal.setText("Sub-total: ₱" + subtotal);
+        tvDelivery.setText("Delivery Charge: ₱" + deliveryCharge);
+        tvDiscount.setText("Discount: ₱" + discount);
+        int total = subtotal + deliveryCharge - discount;
+        tvTotal.setText("Total: ₱" + total);
+
+        cart.edit().putInt("TOTAL", total).apply();
     }
 }
