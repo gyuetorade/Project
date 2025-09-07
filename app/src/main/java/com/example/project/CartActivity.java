@@ -1,60 +1,216 @@
-// chicha/CartActivity.java
 package com.example.project;
 
-import android.content.Intent;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.TextView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.*;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.appbar.MaterialToolbar;
+import androidx.cardview.widget.CardView;
 
 public class CartActivity extends AppCompatActivity {
 
-    SharedPreferences cart;
-    TextView tvCart;
-
-    Button toolbar;
+    SharedPreferences cart, profile;
+    LinearLayout cartContainer;
+    TextView tvTotalAmount, tvName, tvAddress, tvPhone;
+    RadioButton rbDoorDelivery, rbPickUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
 
-        Button toolbar = findViewById(R.id.toolbar);
+        cart = getSharedPreferences("Cart", MODE_PRIVATE);
+        profile = getSharedPreferences("Profile", MODE_PRIVATE);
 
-        toolbar.setOnClickListener(v -> {
-                    Intent intent = new Intent(CartActivity.this, HomeFragment.class);
-                    startActivity(intent);
-        });
+        cartContainer = findViewById(R.id.cartContainer);
+        tvTotalAmount = findViewById(R.id.tvTotalAmount);
+        tvName = findViewById(R.id.tvName);
+        tvAddress = findViewById(R.id.tvAddress);
+        tvPhone = findViewById(R.id.tvPhone);
+        rbDoorDelivery = findViewById(R.id.rbDoorDelivery);
+        rbPickUp = findViewById(R.id.rbPickUp);
 
-                cart = getSharedPreferences("Cart", MODE_PRIVATE);
-        tvCart = findViewById(R.id.tvCartItems);
-        Button btnCheckout = findViewById(R.id.btnCheckout);
+        // Back button
+        findViewById(R.id.toolbar).setOnClickListener(v -> finish());
 
+        // Load address
+        loadAddress();
+
+        // Change address
+        findViewById(R.id.btnChangeAddress).setOnClickListener(v -> showChangeAddressDialog());
+
+        // Build cart UI
         renderCart();
 
-        btnCheckout.setOnClickListener(v -> {
-            cart.edit().clear().apply();
-            renderCart();
+        // Proceed to payment
+        findViewById(R.id.btnProceedPayment).setOnClickListener(v -> {
+            String shipping = rbDoorDelivery.isChecked() ? "Door Delivery" : "Pick Up";
+            Toast.makeText(this,
+                    "Proceeding to payment\nShipping: " + shipping +
+                            "\nTotal: " + tvTotalAmount.getText().toString(),
+                    Toast.LENGTH_LONG).show();
+
+            // TODO: Start payment activity or integrate payment gateway
+            // startActivity(new Intent(this, PaymentActivity.class));
         });
     }
 
+    private void loadAddress() {
+        String name = profile.getString("name", "John Doe");
+        String address = profile.getString("address", "123 Main Street, City, Country");
+        String phone = profile.getString("phone", "+63 900 000 0000");
+
+        tvName.setText(name);
+        tvAddress.setText(address);
+        tvPhone.setText(phone);
+    }
+
+    private void showChangeAddressDialog() {
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_change_address, null);
+
+        EditText etName = dialogView.findViewById(R.id.etName);
+        EditText etAddress = dialogView.findViewById(R.id.etAddress);
+        EditText etPhone = dialogView.findViewById(R.id.etPhone);
+
+        // Pre-fill with current values
+        etName.setText(tvName.getText().toString());
+        etAddress.setText(tvAddress.getText().toString());
+        etPhone.setText(tvPhone.getText().toString());
+
+        new AlertDialog.Builder(this)
+                .setTitle("Change Address")
+                .setView(dialogView)
+                .setPositiveButton("Save", (dialog, which) -> {
+                    profile.edit()
+                            .putString("name", etName.getText().toString())
+                            .putString("address", etAddress.getText().toString())
+                            .putString("phone", etPhone.getText().toString())
+                            .apply();
+                    loadAddress();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
     private void renderCart() {
-        int burger = cart.getInt("Burger", 0);
-        int fries = cart.getInt("Fries", 0);
-        int milktea = cart.getInt("Milk Tea", 0);
+        cartContainer.removeAllViews();
+
+        int burgerQty = cart.getInt("Burger", 0);
+        int friesQty = cart.getInt("Fries", 0);
+        int milkTeaQty = cart.getInt("Milk Tea", 0);
+
         int total = cart.getInt("TOTAL", 0);
 
-        StringBuilder sb = new StringBuilder();
-        if (burger > 0) sb.append("Burger x ").append(burger).append("\n");
-        if (fries > 0) sb.append("Fries x ").append(fries).append("\n");
-        if (milktea > 0) sb.append("Milk Tea x ").append(milktea).append("\n");
-        sb.append("\nTotal: ₱").append(total);
-        if (burger + fries + milktea == 0) sb = new StringBuilder("Your cart is empty.");
+        if (burgerQty + friesQty + milkTeaQty == 0) {
+            TextView empty = new TextView(this);
+            empty.setText("Your cart is empty.");
+            empty.setTextSize(16f);
+            cartContainer.addView(empty);
+            tvTotalAmount.setText("Total: ₱0");
+            return;
+        }
 
-        tvCart.setText(sb.toString());
+        if (burgerQty > 0) addCartCard("Burger", 120, burgerQty, R.drawable.moi_moi);
+        if (friesQty > 0) addCartCard("Fries", 60, friesQty, R.drawable.egg_cucumber);
+        if (milkTeaQty > 0) addCartCard("Milk Tea", 90, milkTeaQty, R.drawable.veggie_tomato);
+
+        tvTotalAmount.setText("Total: ₱" + total);
+    }
+
+    private void addCartCard(String name, int price, int qty, int imageRes) {
+        CardView card = new CardView(this);
+        card.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        ));
+        card.setRadius(16f);
+        card.setCardElevation(8f);
+        card.setUseCompatPadding(true);
+        card.setPadding(16, 16, 16, 16);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setGravity(Gravity.CENTER_VERTICAL);
+
+        ImageView img = new ImageView(this);
+        img.setImageResource(imageRes);
+        img.setLayoutParams(new LinearLayout.LayoutParams(100, 100));
+        img.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        LinearLayout info = new LinearLayout(this);
+        info.setOrientation(LinearLayout.VERTICAL);
+        info.setPadding(16, 0, 0, 0);
+        info.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+
+        TextView tvNameItem = new TextView(this);
+        tvNameItem.setText(name);
+        tvNameItem.setTextSize(16f);
+        tvNameItem.setTypeface(null, Typeface.BOLD);
+
+        TextView tvPrice = new TextView(this);
+        tvPrice.setText("₱" + price);
+        tvPrice.setTextSize(14f);
+
+        info.addView(tvNameItem);
+        info.addView(tvPrice);
+
+        LinearLayout qtyControl = new LinearLayout(this);
+        qtyControl.setOrientation(LinearLayout.HORIZONTAL);
+
+        ImageButton btnMinus = new ImageButton(this);
+        btnMinus.setImageResource(R.drawable.minus);
+        btnMinus.setBackground(null);
+
+        TextView tvQty = new TextView(this);
+        tvQty.setText(String.valueOf(qty));
+        tvQty.setPadding(8, 0, 8, 0);
+        tvQty.setTextSize(16f);
+
+        ImageButton btnPlus = new ImageButton(this);
+        btnPlus.setImageResource(R.drawable.add);
+        btnPlus.setBackground(null);
+
+        qtyControl.addView(btnMinus);
+        qtyControl.addView(tvQty);
+        qtyControl.addView(btnPlus);
+
+        layout.addView(img);
+        layout.addView(info);
+        layout.addView(qtyControl);
+        card.addView(layout);
+        cartContainer.addView(card);
+
+        btnPlus.setOnClickListener(v -> {
+            int newQty = Integer.parseInt(tvQty.getText().toString()) + 1;
+            tvQty.setText(String.valueOf(newQty));
+            updateCart(name, price, 1);
+        });
+
+        btnMinus.setOnClickListener(v -> {
+            int currentQty = Integer.parseInt(tvQty.getText().toString());
+            if (currentQty > 1) {
+                tvQty.setText(String.valueOf(currentQty - 1));
+                updateCart(name, price, -1);
+            }
+        });
+    }
+
+    private void updateCart(String name, int price, int qtyChange) {
+        int currentQty = cart.getInt(name, 0) + qtyChange;
+        int currentTotal = cart.getInt("TOTAL", 0) + (price * qtyChange);
+
+        cart.edit()
+                .putInt(name, currentQty)
+                .putInt("TOTAL", currentTotal)
+                .apply();
+
+        renderCart();
     }
 }

@@ -1,6 +1,8 @@
 package com.example.project;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -21,10 +23,13 @@ public class OrdersFragment extends Fragment {
 
     private LinearLayout orderContainer;
     private TextView tvSubtotal, tvDelivery, tvDiscount, tvTotal;
+    private Button btnPlaceOrder;
 
     private int deliveryCharge = 10;
     private int discount = 10;
     private int subtotal = 0;
+
+    private SharedPreferences cart;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -33,15 +38,26 @@ public class OrdersFragment extends Fragment {
         tvDelivery = view.findViewById(R.id.tvDelivery);
         tvDiscount = view.findViewById(R.id.tvDiscount);
         tvTotal = view.findViewById(R.id.tvTotal);
+        btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder);
 
-        addOrderCard("Chicken Burger", "Burger Factory LTD", 20, R.drawable.moi_moi);
-        addOrderCard("Onion Pizza", "Pizza Palace", 15, R.drawable.egg_cucumber);
-        addOrderCard("Spicy Shawarma", "Hot Cool Spot", 15, R.drawable.veggie_tomato);
+        cart = requireContext().getSharedPreferences("Cart", Context.MODE_PRIVATE);
+        cart.edit().clear().apply(); // start fresh
+
+        // Add sample items
+        addOrderCard("Burger", "Burger Factory LTD", 120, R.drawable.moi_moi);
+        addOrderCard("Fries", "Pizza Palace", 60, R.drawable.egg_cucumber);
+        addOrderCard("Milk Tea", "Hot Cool Spot", 90, R.drawable.veggie_tomato);
 
         updateSummary();
+
+        // ✅ FIX: Place My Order → CartActivity
+        btnPlaceOrder.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), CartActivity.class);
+            startActivity(intent);
+        });
     }
 
-    private void addOrderCard(String name, String place, int price, int imageResId) {
+    private void addOrderCard(String keyName, String place, int price, int imageResId) {
         Context context = requireContext();
 
         CardView card = new CardView(context);
@@ -69,7 +85,7 @@ public class OrdersFragment extends Fragment {
         info.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
         TextView tvName = new TextView(context);
-        tvName.setText(name);
+        tvName.setText(keyName);
         tvName.setTextSize(16f);
         tvName.setTypeface(null, Typeface.BOLD);
 
@@ -111,13 +127,22 @@ public class OrdersFragment extends Fragment {
         card.addView(layout);
         orderContainer.addView(card);
 
+        // Initial add to cart
         subtotal += price;
+        cart.edit()
+                .putInt(keyName, 1)
+                .putInt("TOTAL", subtotal)
+                .apply();
         updateSummary();
 
         btnPlus.setOnClickListener(v -> {
             int qty = Integer.parseInt(tvQty.getText().toString()) + 1;
             tvQty.setText(String.valueOf(qty));
             subtotal += price;
+            cart.edit()
+                    .putInt(keyName, qty)
+                    .putInt("TOTAL", subtotal)
+                    .apply();
             updateSummary();
         });
 
@@ -127,6 +152,10 @@ public class OrdersFragment extends Fragment {
                 qty--;
                 tvQty.setText(String.valueOf(qty));
                 subtotal -= price;
+                cart.edit()
+                        .putInt(keyName, qty)
+                        .putInt("TOTAL", subtotal)
+                        .apply();
                 updateSummary();
             }
         });
@@ -138,5 +167,7 @@ public class OrdersFragment extends Fragment {
         tvDiscount.setText("Discount: ₱" + discount);
         int total = subtotal + deliveryCharge - discount;
         tvTotal.setText("Total: ₱" + total);
+
+        cart.edit().putInt("TOTAL", total).apply();
     }
 }
