@@ -141,6 +141,7 @@
 
         <ImageButton
             android:id="@+id/btnMenu"
+            android:scaleType="fitCenter"
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:src="@drawable/menu"
