@@ -81,10 +81,9 @@
             android:id="@+id/imageView4"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginTop="8dp"
             android:src="@drawable/location"
             app:layout_constraintStart_toStartOf="@+id/imageView3"
-            app:layout_constraintTop_toBottomOf="@id/imageView3" />
+            tools:layout_editor_absoluteY="76dp" />
 
         <!-- Location Text -->
         <TextView
@@ -94,7 +93,6 @@
             android:text="ITALIAN super duper water mark slope drone stone /n eclipse"
             android:textColor="@android:color/white"
             android:textSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
             app:layout_constraintStart_toEndOf="@id/imageView4"
             app:layout_constraintTop_toTopOf="@+id/imageView4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
