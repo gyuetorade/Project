@@ -42,9 +42,8 @@
         <!-- Food Image -->
         <ImageView
             android:id="@+id/foodImage"
-            android:layout_width="400dp"
+            android:layout_width="match_parent"
             android:layout_height="350dp"
-            android:layout_marginBottom="16dp"
             android:contentDescription="Food image"
             android:scaleType="centerCrop" />
 

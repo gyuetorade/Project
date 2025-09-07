@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -41,14 +43,8 @@ public class OrdersFragment extends Fragment {
         btnPlaceOrder = view.findViewById(R.id.btnPlaceOrder);
 
         cart = requireContext().getSharedPreferences("Cart", Context.MODE_PRIVATE);
-        cart.edit().clear().apply(); // start fresh
 
-        // Add sample items
-        addOrderCard("Burger", "Burger Factory LTD", 120, R.drawable.moi_moi);
-        addOrderCard("Fries", "Pizza Palace", 60, R.drawable.egg_cucumber);
-        addOrderCard("Milk Tea", "Hot Cool Spot", 90, R.drawable.veggie_tomato);
-
-        updateSummary();
+        renderCart();
 
         // ✅ FIX: Place My Order → CartActivity
         btnPlaceOrder.setOnClickListener(v -> {
@@ -57,7 +53,25 @@ public class OrdersFragment extends Fragment {
         });
     }
 
-    private void addOrderCard(String keyName, String place, int price, int imageResId) {
+    private void renderCart() {
+        orderContainer.removeAllViews();
+        subtotal = 0;
+
+        java.util.Set<String> items = cart.getStringSet("ITEMS", new java.util.HashSet<>());
+        for (String name : items) {
+            int qty = cart.getInt(name + "_qty", 0);
+            int price = cart.getInt(name + "_price", 0);
+            int imageRes = cart.getInt(name + "_image", R.drawable.ic_food_placeholder);
+            if (qty > 0) {
+                addOrderCard(name, price, qty, imageRes);
+                subtotal += price * qty;
+            }
+        }
+
+        updateSummary();
+    }
+
+    private void addOrderCard(String keyName, int price, int qty, int imageResId) {
         Context context = requireContext();
 
         CardView card = new CardView(context);
@@ -89,16 +103,11 @@ public class OrdersFragment extends Fragment {
         tvName.setTextSize(16f);
         tvName.setTypeface(null, Typeface.BOLD);
 
-        TextView tvPlace = new TextView(context);
-        tvPlace.setText(place);
-        tvPlace.setTextSize(14f);
-
         TextView tvPrice = new TextView(context);
-        tvPrice.setText("₱" + price);
+        tvPrice.setText("₱" + (price * qty));
         tvPrice.setTextSize(14f);
 
         info.addView(tvName);
-        info.addView(tvPlace);
         info.addView(tvPrice);
 
         LinearLayout qtyControl = new LinearLayout(context);
@@ -109,7 +118,7 @@ public class OrdersFragment extends Fragment {
         btnMinus.setBackground(null);
 
         TextView tvQty = new TextView(context);
-        tvQty.setText("1");
+        tvQty.setText(String.valueOf(qty));
         tvQty.setPadding(8, 0, 8, 0);
         tvQty.setTextSize(16f);
 
@@ -127,48 +136,57 @@ public class OrdersFragment extends Fragment {
         card.addView(layout);
         orderContainer.addView(card);
 
-        // Initial add to cart
-        subtotal += price;
-        java.util.Set<String> items = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
-        items.add(keyName);
-        cart.edit()
-                .putStringSet("ITEMS", items)
-                .putInt(keyName + "_qty", 1)
-                .putInt(keyName + "_price", price)
-                .putInt(keyName + "_image", imageResId)
-                .putInt("TOTAL", subtotal)
-                .apply();
-        updateSummary();
+        attachSwipeToDelete(card, keyName);
 
         btnPlus.setOnClickListener(v -> {
-            int qty = Integer.parseInt(tvQty.getText().toString()) + 1;
-            tvQty.setText(String.valueOf(qty));
+            int newQty = Integer.parseInt(tvQty.getText().toString()) + 1;
+            tvQty.setText(String.valueOf(newQty));
+            cart.edit().putInt(keyName + "_qty", newQty).apply();
             subtotal += price;
-            java.util.Set<String> itemsPlus = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
-            itemsPlus.add(keyName);
-            cart.edit()
-                    .putStringSet("ITEMS", itemsPlus)
-                    .putInt(keyName + "_qty", qty)
-                    .putInt(keyName + "_price", price)
-                    .putInt(keyName + "_image", imageResId)
-                    .putInt("TOTAL", subtotal)
-                    .apply();
+            tvPrice.setText("₱" + (price * newQty));
             updateSummary();
         });
 
         btnMinus.setOnClickListener(v -> {
-            int qty = Integer.parseInt(tvQty.getText().toString());
-            if (qty > 1) {
-                qty--;
-                tvQty.setText(String.valueOf(qty));
+            int currentQty = Integer.parseInt(tvQty.getText().toString());
+            if (currentQty > 1) {
+                int newQty = currentQty - 1;
+                tvQty.setText(String.valueOf(newQty));
+                cart.edit().putInt(keyName + "_qty", newQty).apply();
                 subtotal -= price;
-                cart.edit()
-                        .putInt(keyName + "_qty", qty)
-                        .putInt("TOTAL", subtotal)
-                        .apply();
+                tvPrice.setText("₱" + (price * newQty));
                 updateSummary();
             }
         });
+    }
+
+    private void attachSwipeToDelete(View card, String keyName) {
+        GestureDetector detector = new GestureDetector(requireContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                float diffX = e2.getX() - e1.getX();
+                float diffY = e2.getY() - e1.getY();
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 100 && Math.abs(velocityX) > 100) {
+                    java.util.Set<String> items = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
+                    items.remove(keyName);
+                    cart.edit()
+                            .remove(keyName + "_qty")
+                            .remove(keyName + "_price")
+                            .remove(keyName + "_image")
+                            .putStringSet("ITEMS", items)
+                            .apply();
+                    renderCart();
+                    return true;
+                }
+                return false;
+            }
+        });
+        card.setOnTouchListener((v, event) -> detector.onTouchEvent(event));
     }
 
     private void updateSummary() {

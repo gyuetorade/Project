@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ public class FoodDetailActivity extends AppCompatActivity {
     private ImageView favButton, bckButton;
 
     Button addToCartButton;
+    SharedPreferences cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +24,8 @@ public class FoodDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_food_detail);
         bckButton = findViewById(R.id.bckButton);
         favButton = findViewById(R.id.favButton);
+        addToCartButton = findViewById(R.id.addToCartButton);
+        cart = getSharedPreferences("Cart", MODE_PRIVATE);
 
         bckButton.setOnClickListener(v -> finish());
 
@@ -32,12 +36,11 @@ public class FoodDetailActivity extends AppCompatActivity {
                 toggleFavorite();
             }
         });
-        findViewById(R.id.addToCartButton).setOnClickListener(v ->
-                Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show()
-        );
+
         // Get the food details from the intent
         String foodName = getIntent().getStringExtra("FOOD_NAME");
         String foodPrice = getIntent().getStringExtra("FOOD_PRICE");
+        int price = parsePrice(foodPrice);
         int foodImageResId = getIntent().getIntExtra("FOOD_IMAGE_RES_ID", R.drawable.fried_chicken);
 
         // Initialize views
@@ -49,11 +52,16 @@ public class FoodDetailActivity extends AppCompatActivity {
         // Set the food details
         foodImage.setImageResource(foodImageResId);
         foodNameTextView.setText(foodName);
-        foodPriceTextView.setText(foodPrice);
+        foodPriceTextView.setText(foodPrice != null ? foodPrice : "₱0");
 
         // Set description based on food name
         String description = getFoodDescription(foodName);
         foodDescription.setText(description);
+
+        addToCartButton.setOnClickListener(v -> {
+            addToCart(foodName, price, foodImageResId);
+            Toast.makeText(this, "Added to cart", Toast.LENGTH_SHORT).show();
+        });
     }
 
     // Method to toggle favorite state
@@ -87,6 +95,28 @@ public class FoodDetailActivity extends AppCompatActivity {
             default:
                 return "Delicious food prepared with the finest ingredients.";
         }
+    }
 
+    private int parsePrice(String price) {
+        if (price == null) return 0;
+        try {
+            return Integer.parseInt(price.replaceAll("[^\\d]", ""));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private void addToCart(String item, int price, int imageRes) {
+        int qty = cart.getInt(item + "_qty", 0) + 1;
+        java.util.Set<String> items = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
+        items.add(item);
+
+        cart.edit()
+                .putStringSet("ITEMS", items)
+                .putInt(item + "_qty", qty)
+                .putInt(item + "_price", price)
+                .putInt(item + "_image", imageRes)
+                .putInt("TOTAL", cart.getInt("TOTAL", 0) + price)
+                .apply();
     }
 }

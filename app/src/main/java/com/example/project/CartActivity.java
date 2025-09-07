@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
@@ -160,7 +162,7 @@ public class CartActivity extends AppCompatActivity {
         tvNameItem.setTypeface(null, Typeface.BOLD);
 
         TextView tvPrice = new TextView(this);
-        tvPrice.setText("₱" + price);
+        tvPrice.setText("₱" + (price * qty));
         tvPrice.setTextSize(14f);
 
         info.addView(tvNameItem);
@@ -192,16 +194,21 @@ public class CartActivity extends AppCompatActivity {
         card.addView(layout);
         cartContainer.addView(card);
 
+        attachSwipeToDelete(card, name);
+
         btnPlus.setOnClickListener(v -> {
             int newQty = Integer.parseInt(tvQty.getText().toString()) + 1;
             tvQty.setText(String.valueOf(newQty));
+            tvPrice.setText("₱" + (price * newQty));
             updateCart(name, price, 1);
         });
 
         btnMinus.setOnClickListener(v -> {
             int currentQty = Integer.parseInt(tvQty.getText().toString());
             if (currentQty > 1) {
-                tvQty.setText(String.valueOf(currentQty - 1));
+                int newQty = currentQty - 1;
+                tvQty.setText(String.valueOf(newQty));
+                tvPrice.setText("₱" + (price * newQty));
                 updateCart(name, price, -1);
             }
         });
@@ -216,5 +223,34 @@ public class CartActivity extends AppCompatActivity {
         editor.apply();
 
         renderCart();
+    }
+
+    private void attachSwipeToDelete(View card, String name) {
+        GestureDetector detector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                float diffX = e2.getX() - e1.getX();
+                float diffY = e2.getY() - e1.getY();
+                if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 100 && Math.abs(velocityX) > 100) {
+                    java.util.Set<String> items = new java.util.HashSet<>(cart.getStringSet("ITEMS", new java.util.HashSet<>()));
+                    items.remove(name);
+                    cart.edit()
+                            .remove(name + "_qty")
+                            .remove(name + "_price")
+                            .remove(name + "_image")
+                            .putStringSet("ITEMS", items)
+                            .apply();
+                    renderCart();
+                    return true;
+                }
+                return false;
+            }
+        });
+        card.setOnTouchListener((v, event) -> detector.onTouchEvent(event));
     }
 }

@@ -143,8 +143,12 @@ public class SearchFragment extends Fragment {
             View child = cardLayout.getChildAt(i);
             if (child instanceof TextView) {
                 TextView textView = (TextView) child;
-                if (textView.getText().toString().startsWith("N")) {
-                    return textView.getText().toString();
+                int id = textView.getId();
+                if (id != View.NO_ID) {
+                    String name = getResources().getResourceEntryName(id);
+                    if (name.startsWith("foodPrice")) {
+                        return textView.getText().toString();
+                    }
                 }
             }
 
@@ -154,8 +158,12 @@ public class SearchFragment extends Fragment {
                     View innerChild = innerLayout.getChildAt(j);
                     if (innerChild instanceof TextView) {
                         TextView textView = (TextView) innerChild;
-                        if (textView.getText().toString().startsWith("N")) {
-                            return textView.getText().toString();
+                        int id = textView.getId();
+                        if (id != View.NO_ID) {
+                            String name = getResources().getResourceEntryName(id);
+                            if (name.startsWith("foodPrice")) {
+                                return textView.getText().toString();
+                            }
                         }
                     }
                 }

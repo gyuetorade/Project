@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:scrollbars="none">
 
     <!-- Search Bar -->
     <LinearLayout
@@ -95,10 +96,11 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/foodPrice1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱400"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -142,10 +144,11 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/foodPrice2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱500"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -198,10 +201,11 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/foodPrice3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱600"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -245,10 +249,11 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/foodPrice4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱700"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -298,10 +303,11 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/foodPrice5"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱900"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
