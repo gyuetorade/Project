@@ -27,8 +27,9 @@
         android:id="@+id/summaryCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -67,7 +68,7 @@
 
             <Button
                 android:id="@+id/btnPlaceOrder"
-                android:layout_width="340dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/orange"
