@@ -7,11 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 public class HomeFragment extends Fragment {
+    private ImageButton btnLike;
+    private boolean isFavorited = false;
+    private TextView tvLikeCount;
+    private int likeCount = 0;
 
     public HomeFragment() {
         super(R.layout.fragment_home);
@@ -19,18 +24,20 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ImageButton btnLike = view.findViewById(R.id.btnLike);
+        btnLike = view.findViewById(R.id.btnLike);
         ImageButton btnComment = view.findViewById(R.id.btnComment);
-        ImageButton btnMenu = view.findViewById(R.id.btnMenu); // ✅ Menu button
+        ImageButton btnMenu = view.findViewById(R.id.btnMenu);
         Button btnFollow = view.findViewById(R.id.btnFollow);
 
-        TextView tvLikeCount = view.findViewById(R.id.tvLikeCount);
-        final int[] likeCount = {0};
+        tvLikeCount = view.findViewById(R.id.tvLikeCount);
         final boolean[] isFollowing = {false};
 
-        btnLike.setOnClickListener(v -> {
-            likeCount[0]++;
-            tvLikeCount.setText(String.valueOf(likeCount[0]));
+
+        btnLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleLike();
+            }
         });
 
         btnComment.setOnClickListener(v ->
@@ -40,7 +47,6 @@ public class HomeFragment extends Fragment {
         btnMenu.setOnClickListener(v -> {
             com.example.project.MenuBottomSheet sheet = new com.example.project.MenuBottomSheet();
             sheet.show(getParentFragmentManager(), "MenuBottomSheet");
-
         });
 
         btnFollow.setOnClickListener(v -> {
@@ -59,5 +65,24 @@ public class HomeFragment extends Fragment {
                         .show();
             }
         });
+    }
+
+    private void toggleLike() {
+        isFavorited = !isFavorited;
+
+        if (isFavorited) {
+            likeCount++;
+            tvLikeCount.setText(String.valueOf(likeCount));
+
+            btnLike.setImageResource(R.drawable.heart);
+            Toast.makeText(getContext(), "Liked", Toast.LENGTH_SHORT).show();
+        } else {
+            likeCount--;
+            if (likeCount < 0) likeCount = 0;
+            tvLikeCount.setText(String.valueOf(likeCount));
+
+            btnLike.setImageResource(R.drawable.hearty);
+            Toast.makeText(getContext(), "Removed From Favorite", Toast.LENGTH_SHORT).show();
+        }
     }
 }

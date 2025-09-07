@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,17 +26,10 @@ public class SearchFragment extends Fragment {
         Button btnSearch = view.findViewById(R.id.btnSearch);
         LinearLayout foodList = view.findViewById(R.id.foodList);
         TextView noResult = view.findViewById(R.id.noResult);
+        ImageView searchIcon = view.findViewById(R.id.searchIcon);
 
-        setupCardClick(view.findViewById(R.id.cardSpicyChickens),
-                R.drawable.fried_chicken, R.id.foodName1);
-        setupCardClick(view.findViewById(R.id.cardVeggieTomato),
-                R.drawable.veggie_tomato, R.id.foodName2);
-        setupCardClick(view.findViewById(R.id.cardEggCucumber),
-                R.drawable.egg_cucumber, R.id.foodName3);
-        setupCardClick(view.findViewById(R.id.cardFriedChicken),
-                R.drawable.fried_chicken, R.id.foodName4);
-        setupCardClick(view.findViewById(R.id.cardMoiMoiEkpa),
-                R.drawable.moi_moi, R.id.foodName5);
+        // Set up click listeners for all cards
+        setupCardClickListeners(view);
 
         btnSearch.setOnClickListener(v -> {
             String query = etSearch.getText().toString().trim().toLowerCase();
@@ -43,6 +37,7 @@ public class SearchFragment extends Fragment {
                 Toast.makeText(getContext(), "Please enter something to search.", Toast.LENGTH_SHORT).show();
                 showAllCards(foodList);
                 noResult.setVisibility(View.GONE);
+                searchIcon.setVisibility(View.GONE);
                 return;
             }
 
@@ -59,7 +54,6 @@ public class SearchFragment extends Fragment {
                         View card = rowLayout.getChildAt(j);
                         if (card instanceof CardView) {
                             CardView cardView = (CardView) card;
-                            // Get the food name from the card
                             String foodName = getFoodNameFromCard(cardView);
 
                             if (foodName.toLowerCase().contains(query)) {
@@ -73,35 +67,124 @@ public class SearchFragment extends Fragment {
                 }
             }
 
-            noResult.setVisibility(foundResult ? View.GONE : View.VISIBLE);
+            // Show/hide no result message and icon
+            if (foundResult) {
+                noResult.setVisibility(View.GONE);
+                searchIcon.setVisibility(View.GONE);
+            } else {
+                noResult.setVisibility(View.VISIBLE);
+                searchIcon.setVisibility(View.VISIBLE);
+            }
         });
+    }
+
+    // Helper method to set up click listeners for all cards
+    private void setupCardClickListeners(View view) {
+        int[] cardIds = {R.id.card1, R.id.card2, R.id.card3, R.id.card4, R.id.card5};
+
+        for (int cardId : cardIds) {
+            CardView card = view.findViewById(cardId);
+            if (card != null) {
+                card.setOnClickListener(v -> {
+                    CardView cardView = (CardView) v;
+                    String foodName = getFoodNameFromCard(cardView);
+                    String foodPrice = getFoodPriceFromCard(cardView);
+                    int foodImageResId = getFoodImageFromCard(cardView);
+
+                    openFoodDetailActivity(foodName, foodPrice, foodImageResId);
+                });
+            }
+        }
+    }
+
+    // Method to open FoodDetailActivity with food details
+    private void openFoodDetailActivity(String foodName, String foodPrice, int foodImageResId) {
+        Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
+        intent.putExtra("FOOD_NAME", foodName);
+        intent.putExtra("FOOD_PRICE", foodPrice);
+        intent.putExtra("FOOD_IMAGE_RES_ID", foodImageResId);
+        startActivity(intent);
     }
 
     // Helper method to extract food name from card
     private String getFoodNameFromCard(CardView cardView) {
-        // The card has a LinearLayout as its first child
         LinearLayout cardLayout = (LinearLayout) cardView.getChildAt(0);
 
-        // Look for a TextView that likely contains the food name
         for (int i = 0; i < cardLayout.getChildCount(); i++) {
             View child = cardLayout.getChildAt(i);
             if (child instanceof TextView) {
-                return ((TextView) child).getText().toString();
+                TextView textView = (TextView) child;
+                if (!textView.getText().toString().startsWith("N")) {
+                    return textView.getText().toString();
+                }
             }
 
-            // If it's another layout, search inside it
             if (child instanceof LinearLayout) {
                 LinearLayout innerLayout = (LinearLayout) child;
                 for (int j = 0; j < innerLayout.getChildCount(); j++) {
                     View innerChild = innerLayout.getChildAt(j);
                     if (innerChild instanceof TextView) {
-                        return ((TextView) innerChild).getText().toString();
+                        TextView textView = (TextView) innerChild;
+                        if (!textView.getText().toString().startsWith("N")) {
+                            return textView.getText().toString();
+                        }
                     }
                 }
             }
         }
-
         return "";
+    }
+
+    // Helper method to extract food price from card
+    private String getFoodPriceFromCard(CardView cardView) {
+        LinearLayout cardLayout = (LinearLayout) cardView.getChildAt(0);
+
+        for (int i = 0; i < cardLayout.getChildCount(); i++) {
+            View child = cardLayout.getChildAt(i);
+            if (child instanceof TextView) {
+                TextView textView = (TextView) child;
+                if (textView.getText().toString().startsWith("N")) {
+                    return textView.getText().toString();
+                }
+            }
+
+            if (child instanceof LinearLayout) {
+                LinearLayout innerLayout = (LinearLayout) child;
+                for (int j = 0; j < innerLayout.getChildCount(); j++) {
+                    View innerChild = innerLayout.getChildAt(j);
+                    if (innerChild instanceof TextView) {
+                        TextView textView = (TextView) innerChild;
+                        if (textView.getText().toString().startsWith("N")) {
+                            return textView.getText().toString();
+                        }
+                    }
+                }
+            }
+        }
+        return "";
+    }
+
+    // Helper method to get food image resource ID from card
+    private int getFoodImageFromCard(CardView cardView) {
+        // Since we can't directly get the resource ID from the ImageView in this context,
+        // we'll map the food names to image resources
+        String foodName = getFoodNameFromCard(cardView);
+
+        // Map food names to drawable resources
+        switch (foodName) {
+            case "Spicy chickens":
+                return R.drawable.fried_chicken;
+            case "Veggie tomato":
+                return R.drawable.veggie_tomato;
+            case "Egg n cucumber":
+                return R.drawable.egg_cucumber;
+            case "Fried chicken m.":
+                return R.drawable.fried_chicken;
+            case "Moi-moi and ekpa.":
+                return R.drawable.moi_moi;
+            default:
+                return R.drawable.fried_chicken; // default image
+        }
     }
 
     // Helper method to show all cards
@@ -118,17 +201,5 @@ public class SearchFragment extends Fragment {
                 }
             }
         }
-    }
-
-    private void setupCardClick(CardView cardView, int imageRes, int nameViewId) {
-        if (cardView == null) return;
-        cardView.setOnClickListener(v -> {
-            TextView nameView = cardView.findViewById(nameViewId);
-            String name = nameView != null ? nameView.getText().toString() : "";
-            Intent intent = new Intent(getActivity(), FoodDetailActivity.class);
-            intent.putExtra("name", name);
-            intent.putExtra("images", new int[]{imageRes});
-            startActivity(intent);
-        });
     }
 }

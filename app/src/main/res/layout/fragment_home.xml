@@ -112,11 +112,11 @@
 
         <ImageButton
             android:id="@+id/btnLike"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:src="@drawable/heart"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:background="@android:color/transparent"
-            android:contentDescription="Like" />
+            android:contentDescription="Like"
+            android:src="@drawable/hearty" />
 
         <TextView
             android:id="@+id/tvLikeCount"
