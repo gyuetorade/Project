@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -33,31 +35,32 @@
     </LinearLayout>
 
     <!-- Personal Details Header -->
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="24dp">
 
         <TextView
+            android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="28dp"
             android:text="Personal details"
+            android:textColor="#000000"
             android:textSize="16sp"
-            android:textColor="#000000" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/btnChange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="158dp"
-            android:text="change"
+            android:text="Edit Details"
+            android:textColor="#FF4500"
             android:textSize="14sp"
-            android:textColor="#FF4500" />
-    </LinearLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- User Info Card -->
 
     <!-- Menu Options -->
     <LinearLayout
@@ -100,15 +103,15 @@
                 android:id="@+id/tvEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dosamarvis@gmail.com"
-                android:textColor="#666666"
+                android:text="Email Address:"
+                android:textColor="#000000"
                 android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvPhone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+234 9011039271"
+                android:text="Phone No:"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -117,8 +120,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="No 15 uti street off ovie palace road effurun delta state"
-                android:textColor="#444444"
+                android:text="Current Address:"
+                android:textColor="#000000"
                 android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
