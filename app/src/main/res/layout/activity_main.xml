@@ -11,7 +11,7 @@
         android:id="@+id/topAppBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/orange"
         android:title="Chicha"
         android:titleTextColor="@android:color/white"
         app:titleCentered="true"
