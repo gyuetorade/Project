@@ -60,6 +60,7 @@
 
                 <!-- Spicy Chickens Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardSpicyChickens"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_width="0dp"
@@ -105,6 +106,7 @@
 
                 <!-- Veggie tomato mix Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardVeggieTomato"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="0dp"
@@ -158,6 +160,7 @@
 
                 <!-- Egg and cucumber... Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardEggCucumber"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="0dp"
@@ -204,6 +207,7 @@
 
                 <!-- Fried chicken m. Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardFriedChicken"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="0dp"
@@ -255,6 +259,7 @@
                 android:weightSum="2">
                 <!-- Moi-moi and ekpa. Card -->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardMoiMoiEkpa"
                     android:layout_marginRight="10dp"
                     android:layout_marginLeft="10dp"
                     android:layout_width="0dp"

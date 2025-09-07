@@ -38,7 +38,7 @@ public class ImagePagerAdapter extends RecyclerView.Adapter<ImagePagerAdapter.Im
 
         ImageViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.itemImage);
+            image = itemView.findViewById(R.id.item_image);
         }
     }
 }

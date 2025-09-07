@@ -1,8 +1,10 @@
 package com.example.project;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -20,9 +22,11 @@ public class HomeFragment extends Fragment {
         ImageButton btnLike = view.findViewById(R.id.btnLike);
         ImageButton btnComment = view.findViewById(R.id.btnComment);
         ImageButton btnMenu = view.findViewById(R.id.btnMenu); // ✅ Menu button
+        Button btnFollow = view.findViewById(R.id.btnFollow);
 
         TextView tvLikeCount = view.findViewById(R.id.tvLikeCount);
         final int[] likeCount = {0};
+        final boolean[] isFollowing = {false};
 
         btnLike.setOnClickListener(v -> {
             likeCount[0]++;
@@ -36,6 +40,23 @@ public class HomeFragment extends Fragment {
         btnMenu.setOnClickListener(v -> {
             com.example.project.MenuBottomSheet sheet = new com.example.project.MenuBottomSheet();
             sheet.show(getParentFragmentManager(), "MenuBottomSheet");
+        });
+
+        btnFollow.setOnClickListener(v -> {
+            if (!isFollowing[0]) {
+                btnFollow.setText("Following");
+                isFollowing[0] = true;
+            } else {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Unfollow")
+                        .setMessage("Are you sure you want to unfollow?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            isFollowing[0] = false;
+                            btnFollow.setText("Follow");
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
         });
     }
 }
