@@ -95,7 +95,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱1,900"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -112,7 +112,8 @@
                     android:layout_marginTop="35dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="35dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="4dp">
 
 
                     <LinearLayout
@@ -139,7 +140,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱1,900"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -193,7 +194,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱1,900"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -210,7 +211,8 @@
                     android:layout_marginTop="35dp"
                     android:layout_weight="1"
                     app:cardCornerRadius="35dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="4dp">
 
 
                     <LinearLayout
@@ -237,7 +239,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="N1,900"
+                            android:text="₱1,900"
                             android:textColor="@android:color/holo_green_dark"
                             android:textSize="16sp" />
 
@@ -288,7 +290,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="N1,900"
+                        android:text="₱1,900"
                         android:textColor="@android:color/holo_green_dark"
                         android:textSize="16sp" />
 
