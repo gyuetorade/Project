@@ -1,6 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,9 +28,11 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Restaurant Info Block -->
+
+    <!-- TikTok-style vertical action buttons -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/infoOverlay"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="@id/ivFood"
@@ -41,60 +44,61 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/logoforshop"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Restaurant Name -->
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="GAMBERRETTI'S"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@id/imageView3"
-            app:layout_constraintStart_toEndOf="@id/imageView3" />
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@id/imageView3"
+            app:layout_constraintTop_toTopOf="@id/imageView3" />
 
         <!-- Follow Button -->
         <Button
             android:id="@+id/btnFollow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:backgroundTint="@color/white"
             android:text="Follow"
+            android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/orange"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toBottomOf="@id/textView"
-            app:layout_constraintStart_toEndOf="@id/imageView3" />
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintStart_toEndOf="@+id/textView"
+            app:layout_constraintTop_toTopOf="@+id/imageView3" />
 
         <!-- Location Icon -->
         <ImageView
             android:id="@+id/imageView4"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginTop="8dp"
             android:src="@drawable/location"
-            app:layout_constraintTop_toBottomOf="@id/imageView3"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintTop_toBottomOf="@id/imageView3" />
 
         <!-- Location Text -->
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="matc"
             android:layout_height="wrap_content"
-            android:text="This is the thing"
-            android:textSize="14sp"
+            android:text="ITALIAN super duper water mark slope drone stone /n eclipse"
             android:textColor="@android:color/white"
-            android:layout_marginStart="8dp"
-            app:layout_constraintTop_toTopOf="@id/imageView4"
-            app:layout_constraintStart_toEndOf="@id/imageView4" />
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+            app:layout_constraintStart_toEndOf="@id/imageView4"
+            app:layout_constraintTop_toTopOf="@+id/imageView4" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- TikTok-style vertical action buttons -->
     <LinearLayout
         android:id="@+id/actionButtons"
         android:layout_width="wrap_content"
@@ -126,6 +130,8 @@
             android:layout_marginBottom="12dp" />
 
         <ImageButton
+            android:padding="10dp"
+            android:scaleType="fitCenter"
             android:id="@+id/btnComment"
             android:layout_width="56dp"
             android:layout_height="56dp"
