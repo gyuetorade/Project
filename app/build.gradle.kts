@@ -50,7 +50,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
     implementation("com.google.firebase:firebase-firestore-ktx")
 
-    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
+    implementation("com.google.android.exoplayer:exoplayer:2.19.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

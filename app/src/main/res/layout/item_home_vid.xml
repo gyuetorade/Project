@@ -4,12 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:id="@+id/youtubePlayerView"
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+        android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:keepScreenOn="true"
-        android:importantForAccessibility="no" >
+        android:importantForAccessibility="no"
+        app:show_buffering="when_playing"
+        app:use_controller="false" >
 
         <LinearLayout
             android:id="@+id/actionButtons"
@@ -66,7 +68,7 @@
             android:layout_height="160dp"
             android:layout_gravity="bottom"
             android:background="@drawable/bottom_gradient" />
-    </com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView>
+    </com.google.android.exoplayer2.ui.StyledPlayerView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/infoOverlay"

@@ -119,7 +119,7 @@ public class HomeFragment extends Fragment {
             }
 
             List<ChichaVideo> videos = new ArrayList<>();
-            boolean missingVideoId = false;
+            boolean missingVideoUrl = false;
 
             for (DocumentSnapshot doc : value.getDocuments()) {
                 String id = doc.getId();
@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment {
                 String videoId = doc.getString("videoId");
 
                 if (videoId == null || videoId.trim().isEmpty()) {
-                    missingVideoId = true;
+                    missingVideoUrl = true;
                     continue;
                 }
 
@@ -153,8 +153,8 @@ public class HomeFragment extends Fragment {
                 emptyView.setVisibility(View.GONE);
             }
 
-            if (missingVideoId) {
-                Toast.makeText(requireContext(), R.string.video_missing_id, Toast.LENGTH_SHORT).show();
+            if (missingVideoUrl) {
+                Toast.makeText(requireContext(), R.string.video_missing_url, Toast.LENGTH_SHORT).show();
             }
         }
     };
