@@ -80,22 +80,10 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
         void bind(@NonNull Fragment fragment, @NonNull ChichaVideo item) {
             binding.ivLogo.setImageResource(R.drawable.logoforshop);
             binding.tvRestaurantName.setText(fragment.getString(R.string.video_branding_label));
-            binding.tvRestaurantName.setVisibility(View.GONE);
             binding.tvDescription.setText(item.getDescription());
             binding.tvLikeCount.setText(String.valueOf(item.getLikeCount()));
             binding.btnLike.setImageResource(item.isLiked() ? R.drawable.favorite : R.drawable.heart);
             binding.btnFollow.setText(item.isFollowing() ? R.string.following : R.string.follow);
-
-            PlayerUiController uiController = binding.youtubePlayerView.getPlayerUiController();
-            uiController.showPlayPauseButton(false);
-            uiController.showSeekBar(false);
-            uiController.showVideoTitle(false);
-            uiController.showCurrentTime(false);
-            uiController.showDuration(false);
-            uiController.showYouTubeButton(false);
-            uiController.showFullscreenButton(false);
-            uiController.showMenuButton(false);
-            uiController.showBufferingProgress(false);
 
             if (!lifecycleRegistered) {
                 fragment.getLifecycle().addObserver(binding.youtubePlayerView);
@@ -107,6 +95,12 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
                 playbackListener = null;
             }
 
+            com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerUiController uiController =
+                    binding.youtubePlayerView.getPlayerUiController();
+            uiController.showFullscreenButton(false);
+            uiController.showMenuButton(false);
+            uiController.showYouTubeButton(false);
+
             playbackListener = new AbstractYouTubePlayerListener() {
                 @Override
                 public void onReady(@NonNull YouTubePlayer player) {
@@ -116,14 +110,6 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
                         youTubePlayer.loadVideo(item.getVideoId(), 0f);
                     } else {
                         youTubePlayer.play();
-                    }
-                }
-
-                @Override
-                public void onStateChange(@NonNull YouTubePlayer player, @NonNull PlayerConstants.PlayerState state) {
-                    if (state == PlayerConstants.PlayerState.ENDED) {
-                        player.seekTo(0f);
-                        player.play();
                     }
                 }
             };
