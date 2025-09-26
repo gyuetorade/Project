@@ -56,12 +56,12 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
             binding.tvRestaurantName.setText(item.getRestaurantName());
             binding.tvDescription.setText(item.getDescription());
             binding.tvLikeCount.setText(String.valueOf(item.getLikeCount()));
-            binding.btnLike.setImageResource(item.isLiked() ? R.drawable.heart : R.drawable.hearty);
+            binding.btnLike.setImageResource(item.isLiked() ? R.drawable.favorite : R.drawable.heart);
             binding.btnFollow.setText(item.isFollowing() ? R.string.following : R.string.follow);
 
             binding.btnLike.setOnClickListener(v -> {
                 boolean liked = item.toggleLiked();
-                binding.btnLike.setImageResource(liked ? R.drawable.heart : R.drawable.hearty);
+                binding.btnLike.setImageResource(liked ? R.drawable.favorite : R.drawable.heart);
                 binding.tvLikeCount.setText(String.valueOf(item.getLikeCount()));
                 Toast.makeText(fragment.requireContext(), liked ? R.string.liked : R.string.unliked, Toast.LENGTH_SHORT).show();
             });
