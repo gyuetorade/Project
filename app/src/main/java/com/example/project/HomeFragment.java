@@ -102,6 +102,7 @@ public class HomeFragment extends Fragment {
             for (DocumentSnapshot doc : value.getDocuments()) {
                 String id = doc.getId();
                 String title = doc.getString("title");
+                String description = doc.getString("desc");
                 String videoId = doc.getString("videoId");
 
                 if (videoId == null || videoId.trim().isEmpty()) {
@@ -110,10 +111,14 @@ public class HomeFragment extends Fragment {
                 }
 
                 if (title == null || title.trim().isEmpty()) {
-                    title = getString(R.string.video_default_title);
+                    title = id;
                 }
 
-                videos.add(new ChichaVideo(id, title, videoId.trim()));
+                if (description == null || description.trim().isEmpty()) {
+                    description = getString(R.string.video_default_description);
+                }
+
+                videos.add(new ChichaVideo(id, title, description, videoId.trim()));
             }
 
             if (adapter != null) {
