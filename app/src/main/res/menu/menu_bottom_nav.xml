@@ -9,7 +9,7 @@
         android:icon="@drawable/search" />
     <item
         android:id="@+id/nav_orders"
-        android:title="Orders"
+        android:title="Cart"
         android:icon="@drawable/shopping" />
     <item
         android:id="@+id/nav_settings"
