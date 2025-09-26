@@ -80,7 +80,7 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
         void bind(@NonNull Fragment fragment, @NonNull ChichaVideo item) {
             binding.ivLogo.setImageResource(R.drawable.logoforshop);
             binding.tvRestaurantName.setText(fragment.getString(R.string.video_branding_label));
-            binding.tvDescription.setText(item.getDescription());
+            binding.tvDescription.setText(item.getTitle());
             binding.tvLikeCount.setText(String.valueOf(item.getLikeCount()));
             binding.btnLike.setImageResource(item.isLiked() ? R.drawable.favorite : R.drawable.heart);
             binding.btnFollow.setText(item.isFollowing() ? R.string.following : R.string.follow);
@@ -94,12 +94,6 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
                 binding.youtubePlayerView.removeYouTubePlayerListener(playbackListener);
                 playbackListener = null;
             }
-
-            com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerUiController uiController =
-                    binding.youtubePlayerView.getPlayerUiController();
-            uiController.showFullscreenButton(false);
-            uiController.showMenuButton(false);
-            uiController.showYouTubeButton(false);
 
             playbackListener = new AbstractYouTubePlayerListener() {
                 @Override
