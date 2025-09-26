@@ -30,9 +30,6 @@
             android:name=".FoodDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".FoodName"
-            android:exported="false" />
-        <activity
             android:name=".BrowseLayoutActivity"
             android:exported="false" />
         <activity

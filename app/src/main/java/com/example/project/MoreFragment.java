@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +25,6 @@ public class MoreFragment extends Fragment {
     View optionPending;
     View optionFaq;
     View optionHelp;
-    Button btnUpdate;
     ImageView btnBack;
     TextView btnChange;
 
@@ -63,20 +62,20 @@ public class MoreFragment extends Fragment {
         optionFaq.setOnClickListener(v -> openChildFragment(new FAQFragment()));
         optionHelp.setOnClickListener(v -> openChildFragment(new HelpCenterFragment()));
 
-        btnUpdate.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Update profile clicked", Toast.LENGTH_SHORT).show();
-        });
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> {
+                BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNav);
+                if (bottomNav != null) {
+                    bottomNav.setSelectedItemId(R.id.nav_home);
+                } else {
+                    requireActivity().onBackPressed();
+                }
+            });
+        }
 
-        btnBack.setOnClickListener(v -> {
-            BottomNavigationView bottomNav = requireActivity().findViewById(R.id.bottomNav);
-            if (bottomNav != null) {
-                bottomNav.setSelectedItemId(R.id.nav_home);
-            } else {
-                requireActivity().onBackPressed();
-            }
-        });
-
-        btnChange.setOnClickListener(v -> showEditProfileDialog());
+        if (btnChange != null) {
+            btnChange.setOnClickListener(v -> showEditProfileDialog());
+        }
     }
 
     private void openChildFragment(Fragment fragment) {
@@ -90,10 +89,10 @@ public class MoreFragment extends Fragment {
     private void showEditProfileDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_profile, null);
 
-        TextView etName = dialogView.findViewById(R.id.etName);
-        TextView etEmail = dialogView.findViewById(R.id.etEmail);
-        TextView etPhone = dialogView.findViewById(R.id.etPhone);
-        TextView etAddress = dialogView.findViewById(R.id.etAddress);
+        EditText etName = dialogView.findViewById(R.id.etName);
+        EditText etEmail = dialogView.findViewById(R.id.etEmail);
+        EditText etPhone = dialogView.findViewById(R.id.etPhone);
+        EditText etAddress = dialogView.findViewById(R.id.etAddress);
 
         // Pre-fill with current values
         etName.setText(tvName.getText().toString());
