@@ -31,6 +31,7 @@ public class HomeFragment extends Fragment {
     private ProgressBar progressBar;
     private TextView emptyView;
     private ListenerRegistration registration;
+    private ViewPager2.OnPageChangeCallback pageChangeCallback;
 
     public HomeFragment() {
         super(R.layout.fragment_home);
@@ -47,6 +48,23 @@ public class HomeFragment extends Fragment {
         viewPager.setOffscreenPageLimit(1);
         viewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
 
+        pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                if (adapter != null) {
+                    adapter.setCurrentItem(position);
+                }
+            }
+        };
+        viewPager.registerOnPageChangeCallback(pageChangeCallback);
+
+        viewPager.post(() -> {
+            if (adapter != null) {
+                adapter.setCurrentItem(viewPager.getCurrentItem());
+            }
+        });
+
         if (progressBar != null) {
             progressBar.setVisibility(View.VISIBLE);
         }
@@ -58,6 +76,10 @@ public class HomeFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         stopListening();
+        if (viewPager != null && pageChangeCallback != null) {
+            viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
+            pageChangeCallback = null;
+        }
         viewPager = null;
         adapter = null;
         progressBar = null;
