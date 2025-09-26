@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +21,10 @@ public class MoreFragment extends Fragment {
 
     SharedPreferences profile;
     TextView tvName, tvEmail, tvPhone, tvAddress;
-    ListView listOptions;
+    View optionOrders;
+    View optionPending;
+    View optionFaq;
+    View optionHelp;
     Button btnUpdate;
     ImageView btnBack;
     TextView btnChange;
@@ -48,26 +49,19 @@ public class MoreFragment extends Fragment {
         tvEmail = view.findViewById(R.id.tvEmail);
         tvPhone = view.findViewById(R.id.tvPhone);
         tvAddress = view.findViewById(R.id.tvAddress);
-        listOptions = view.findViewById(R.id.list_options);
-        btnUpdate = view.findViewById(R.id.btnUpdate);
         btnBack = view.findViewById(R.id.btnBack);
         btnChange = view.findViewById(R.id.btnChange);
+        optionOrders = view.findViewById(R.id.optionOrders);
+        optionPending = view.findViewById(R.id.optionPending);
+        optionFaq = view.findViewById(R.id.optionFaq);
+        optionHelp = view.findViewById(R.id.optionHelp);
 
         loadProfileData();
 
-        String[] menuItems = {"Orders", "Pending reviews", "Faq", "Help"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                requireContext(),
-                R.layout.list_item_option,
-                R.id.tvOption,
-                menuItems
-        );
-        listOptions.setAdapter(adapter);
-
-        listOptions.setOnItemClickListener((parent, itemView, position, id) -> {
-            String selected = menuItems[position];
-            Toast.makeText(requireContext(), selected + " clicked", Toast.LENGTH_SHORT).show();
-        });
+        optionOrders.setOnClickListener(v -> openChildFragment(new OrdersStatusFragment()));
+        optionPending.setOnClickListener(v -> openChildFragment(new PendingReviewsFragment()));
+        optionFaq.setOnClickListener(v -> openChildFragment(new FAQFragment()));
+        optionHelp.setOnClickListener(v -> openChildFragment(new HelpCenterFragment()));
 
         btnUpdate.setOnClickListener(v -> {
             Toast.makeText(requireContext(), "Update profile clicked", Toast.LENGTH_SHORT).show();
@@ -83,6 +77,14 @@ public class MoreFragment extends Fragment {
         });
 
         btnChange.setOnClickListener(v -> showEditProfileDialog());
+    }
+
+    private void openChildFragment(Fragment fragment) {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void showEditProfileDialog() {

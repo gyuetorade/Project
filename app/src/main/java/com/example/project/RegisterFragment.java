@@ -34,7 +34,6 @@ public class RegisterFragment extends Fragment {
 
 
         binding.btnRegister.setOnClickListener(v -> onRegister());
-        binding.tvGoLogin.setOnClickListener(v -> switchToLoginTab());
 
 
         return binding.getRoot();
