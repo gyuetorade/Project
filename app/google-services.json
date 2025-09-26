@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "764794492745",
+    "project_id": "chicha-fcdc0",
+    "storage_bucket": "chicha-fcdc0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:764794492745:android:d2654c0525c9a81285ac98",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpFB27nLCHtbAJFTPiG5e4ihKsYn1-t8Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
