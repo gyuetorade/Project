@@ -11,6 +11,7 @@
     <string name="video_error_loading">Unable to load videos right now. Please try again later.</string>
     <string name="video_missing_id">Some videos could not be shown because their videoId is missing.</string>
     <string name="video_default_title">Featured video</string>
+    <string name="video_default_description">No description available.</string>
     <string name="video_branding_label">Chicha</string>
     <string name="video_like">Like video</string>
     <string name="video_comment">Comment on video</string>
