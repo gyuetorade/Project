@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Gradient Overlay (bottom fade) -->
+
     <View
         android:id="@+id/gradientOverlay"
         android:layout_width="0dp"
