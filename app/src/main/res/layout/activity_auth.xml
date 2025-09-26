@@ -67,9 +67,7 @@
         android:id="@+id/viewPager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp"
+
 
         app:layout_constraintTop_toBottomOf="@id/authCard"
         app:layout_constraintBottom_toBottomOf="parent"
