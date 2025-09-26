@@ -1,53 +1,36 @@
 package com.example.project;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import java.util.Arrays;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import androidx.media3.common.MediaItem;
-import androidx.media3.common.Player;
-import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.ui.PlayerView;
-
 public class HomeFragment extends Fragment {
-    private ViewPager2 viewPager;
-    private ExoPlayer player;
-    private PlayerView currentPlayerView;
-    private int currentPosition = RecyclerView.NO_POSITION;
-    private ViewPager2.OnPageChangeCallback pageChangeCallback;
-    private HomeVideoAdapter adapter;
+    private static final String TAG = "HomeFragment";
 
-    private final List<VideoItem> videoItems = Arrays.asList(
-            new VideoItem(
-                    "https://storage.googleapis.com/exoplayer-test-media-1/mp4/BigBuckBunny_320x180.mp4",
-                    "Gamberetti's",
-                    "ITALIAN super duper water mark slope drone stone /n eclipse",
-                    R.drawable.logoforshop,
-                    128
-            ),
-            new VideoItem(
-                    "https://storage.googleapis.com/exoplayer-test-media-1/mp4/frame-counter-one-minute.mp4",
-                    "La Trattoria",
-                    "Handmade pasta, coastal views, and a glass of chianti to match.",
-                    R.drawable.logoforshop,
-                    86
-            ),
-            new VideoItem(
-                    "https://storage.googleapis.com/exoplayer-test-media-1/mp4/android-screens-10s.mp4",
-                    "Sunset Bistro",
-                    "Seasonal tasting menu featuring local farmers and daily catches.",
-                    R.drawable.logoforshop,
-                    203
-            )
-    );
+    private ViewPager2 viewPager;
+    private HomeVideoAdapter adapter;
+    private ProgressBar progressBar;
+    private TextView emptyView;
+    private ListenerRegistration registration;
 
     public HomeFragment() {
         super(R.layout.fragment_home);
@@ -56,109 +39,110 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewPager = view.findViewById(R.id.videoPager);
-        adapter = new HomeVideoAdapter(this, videoItems);
+        progressBar = view.findViewById(R.id.videoProgress);
+        emptyView = view.findViewById(R.id.videoEmptyState);
+
+        adapter = new HomeVideoAdapter(this);
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(1);
         viewPager.setOrientation(ViewPager2.ORIENTATION_VERTICAL);
 
-        pageChangeCallback = new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                attachPlayerToPosition(position);
-            }
-        };
-        viewPager.registerOnPageChangeCallback(pageChangeCallback);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ensurePlayer();
-        viewPager.post(() -> attachPlayerToPosition(getCurrentPagerPosition()));
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (player != null) {
-            player.pause();
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
         }
+
+        startListening();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (pageChangeCallback != null) {
-            viewPager.unregisterOnPageChangeCallback(pageChangeCallback);
-            pageChangeCallback = null;
-        }
-        releasePlayer();
+        stopListening();
         viewPager = null;
         adapter = null;
-        currentPlayerView = null;
+        progressBar = null;
+        emptyView = null;
     }
 
-    private void ensurePlayer() {
-        if (player == null) {
-            player = new ExoPlayer.Builder(requireContext()).build();
-            player.setRepeatMode(Player.REPEAT_MODE_ONE);
-        }
+    private void startListening() {
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        registration = firestore.collection("chicha")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .addSnapshotListener(snapshotListener);
     }
 
-    private void releasePlayer() {
-        if (currentPlayerView != null) {
-            currentPlayerView.setPlayer(null);
-            currentPlayerView = null;
-        }
-        if (player != null) {
-            player.release();
-            player = null;
-        }
-        currentPosition = RecyclerView.NO_POSITION;
-    }
-
-    private int getCurrentPagerPosition() {
-        if (viewPager == null) {
-            return 0;
-        }
-        int position = viewPager.getCurrentItem();
-        return position < 0 ? 0 : position;
-    }
-
-    private void attachPlayerToPosition(int position) {
-        if (viewPager == null || adapter == null || videoItems.isEmpty()) {
-            return;
-        }
-        ensurePlayer();
-
-        RecyclerView recyclerView = (RecyclerView) viewPager.getChildAt(0);
-        if (recyclerView == null) {
-            viewPager.post(() -> attachPlayerToPosition(position));
-            return;
-        }
-        RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-        if (!(holder instanceof HomeVideoAdapter.VideoViewHolder)) {
-            viewPager.post(() -> attachPlayerToPosition(position));
-            return;
-        }
-
-        HomeVideoAdapter.VideoViewHolder videoHolder = (HomeVideoAdapter.VideoViewHolder) holder;
-        PlayerView nextPlayerView = videoHolder.getPlayerView();
-
-        if (currentPlayerView != nextPlayerView) {
-            if (currentPlayerView != null) {
-                currentPlayerView.setPlayer(null);
+    private final EventListener<QuerySnapshot> snapshotListener = new EventListener<QuerySnapshot>() {
+        @Override
+        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+            if (!isAdded()) {
+                return;
             }
-            currentPlayerView = nextPlayerView;
-            currentPlayerView.setPlayer(player);
-        }
 
-        VideoItem item = videoItems.get(position);
-        if (currentPosition != position) {
-            player.setMediaItem(MediaItem.fromUri(item.getVideoUrl()));
-            player.prepare();
-            currentPosition = position;
+            if (progressBar != null) {
+                progressBar.setVisibility(View.GONE);
+            }
+
+            if (error != null) {
+                Log.e(TAG, "Failed to load videos", error);
+                if (emptyView != null) {
+                    emptyView.setVisibility(View.VISIBLE);
+                    emptyView.setText(R.string.video_error_loading);
+                }
+                return;
+            }
+
+            if (value == null) {
+                showEmptyState();
+                return;
+            }
+
+            List<ChichaVideo> videos = new ArrayList<>();
+            boolean missingVideoId = false;
+
+            for (DocumentSnapshot doc : value.getDocuments()) {
+                String id = doc.getId();
+                String title = doc.getString("title");
+                String videoId = doc.getString("videoId");
+
+                if (videoId == null || videoId.trim().isEmpty()) {
+                    missingVideoId = true;
+                    continue;
+                }
+
+                if (title == null || title.trim().isEmpty()) {
+                    title = getString(R.string.video_default_title);
+                }
+
+                videos.add(new ChichaVideo(id, title, videoId.trim()));
+            }
+
+            if (adapter != null) {
+                adapter.submitList(videos);
+            }
+
+            if (videos.isEmpty()) {
+                showEmptyState();
+            } else if (emptyView != null) {
+                emptyView.setVisibility(View.GONE);
+            }
+
+            if (missingVideoId) {
+                Toast.makeText(requireContext(), R.string.video_missing_id, Toast.LENGTH_SHORT).show();
+            }
         }
-        player.play();
+    };
+
+    private void showEmptyState() {
+        if (emptyView != null) {
+            emptyView.setVisibility(View.VISIBLE);
+            emptyView.setText(R.string.video_empty_state);
+        }
+    }
+
+    private void stopListening() {
+        if (registration != null) {
+            registration.remove();
+            registration = null;
+        }
     }
 }

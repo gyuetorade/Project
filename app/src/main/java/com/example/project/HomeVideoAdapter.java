@@ -2,6 +2,7 @@ package com.example.project;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -9,26 +10,30 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.media3.ui.PlayerView;
 
-import com.example.project.databinding.ItemHomeVideoBinding;
+import com.example.project.databinding.ItemHomeVidBinding;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.VideoViewHolder> {
-    private final Fragment fragment;
-    private final List<VideoItem> videoItems;
+    private static final String TAG = "HomeVideoAdapter";
 
-    public HomeVideoAdapter(@NonNull Fragment fragment, @NonNull List<VideoItem> videoItems) {
+    private final Fragment fragment;
+    private final List<ChichaVideo> videoItems = new ArrayList<>();
+
+    public HomeVideoAdapter(@NonNull Fragment fragment) {
         this.fragment = fragment;
-        this.videoItems = videoItems;
     }
 
     @NonNull
     @Override
     public VideoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        ItemHomeVideoBinding binding = ItemHomeVideoBinding.inflate(inflater, parent, false);
+        ItemHomeVidBinding binding = ItemHomeVidBinding.inflate(inflater, parent, false);
         return new VideoViewHolder(binding);
     }
 
@@ -42,22 +47,68 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
         return videoItems.size();
     }
 
-    static class VideoViewHolder extends RecyclerView.ViewHolder {
-        private final ItemHomeVideoBinding binding;
+    public void submitList(@NonNull List<ChichaVideo> videos) {
+        videoItems.clear();
+        videoItems.addAll(videos);
+        notifyDataSetChanged();
+    }
 
-        VideoViewHolder(@NonNull ItemHomeVideoBinding binding) {
+    @Override
+    public void onViewRecycled(@NonNull VideoViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.releasePlayer();
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(@NonNull VideoViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        holder.pause();
+    }
+
+    static class VideoViewHolder extends RecyclerView.ViewHolder {
+        private final ItemHomeVidBinding binding;
+        private YouTubePlayerListener playbackListener;
+        private YouTubePlayer youTubePlayer;
+        private String boundVideoId;
+        private boolean lifecycleRegistered = false;
+
+        VideoViewHolder(@NonNull ItemHomeVidBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
         }
 
-        void bind(Fragment fragment, VideoItem item) {
-            binding.playerView.setUseController(false);
-            binding.ivLogo.setImageResource(item.getLogoRes());
-            binding.tvRestaurantName.setText(item.getRestaurantName());
-            binding.tvDescription.setText(item.getDescription());
+        void bind(@NonNull Fragment fragment, @NonNull ChichaVideo item) {
+            binding.ivLogo.setImageResource(R.drawable.logoforshop);
+            binding.tvRestaurantName.setText(fragment.getString(R.string.video_branding_label));
+            binding.tvDescription.setText(item.getTitle());
             binding.tvLikeCount.setText(String.valueOf(item.getLikeCount()));
             binding.btnLike.setImageResource(item.isLiked() ? R.drawable.favorite : R.drawable.heart);
             binding.btnFollow.setText(item.isFollowing() ? R.string.following : R.string.follow);
+
+            if (!lifecycleRegistered) {
+                fragment.getLifecycle().addObserver(binding.youtubePlayerView);
+                lifecycleRegistered = true;
+            }
+
+            if (playbackListener != null) {
+                binding.youtubePlayerView.removeYouTubePlayerListener(playbackListener);
+                playbackListener = null;
+            }
+
+            playbackListener = new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull YouTubePlayer player) {
+                    youTubePlayer = player;
+                    if (!item.getVideoId().equals(boundVideoId)) {
+                        boundVideoId = item.getVideoId();
+                        youTubePlayer.loadVideo(item.getVideoId(), 0f);
+                    } else {
+                        youTubePlayer.play();
+                    }
+                }
+            };
+
+            binding.youtubePlayerView.addYouTubePlayerListener(playbackListener);
 
             binding.btnLike.setOnClickListener(v -> {
                 boolean liked = item.toggleLiked();
@@ -71,8 +122,12 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
             );
 
             binding.btnMenu.setOnClickListener(v -> {
-                MenuBottomSheet sheet = new MenuBottomSheet();
-                sheet.show(fragment.getParentFragmentManager(), "MenuBottomSheet");
+                try {
+                    MenuBottomSheet sheet = new MenuBottomSheet();
+                    sheet.show(fragment.getParentFragmentManager(), "MenuBottomSheet");
+                } catch (Exception e) {
+                    Log.w(TAG, "Unable to show menu", e);
+                }
             });
 
             binding.btnFollow.setOnClickListener(v -> {
@@ -93,8 +148,22 @@ public class HomeVideoAdapter extends RecyclerView.Adapter<HomeVideoAdapter.Vide
             });
         }
 
-        PlayerView getPlayerView() {
-            return binding.playerView;
+        void pause() {
+            if (youTubePlayer != null) {
+                youTubePlayer.pause();
+            }
+        }
+
+        void releasePlayer() {
+            if (playbackListener != null) {
+                binding.youtubePlayerView.removeYouTubePlayerListener(playbackListener);
+                playbackListener = null;
+            }
+            if (youTubePlayer != null) {
+                youTubePlayer.pause();
+                youTubePlayer = null;
+            }
+            boundVideoId = null;
         }
     }
 }

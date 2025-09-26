@@ -42,16 +42,15 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
+    implementation("androidx.fragment:fragment:1.8.3")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("androidx.cardview:cardview:1.0.0")
 
-    // Added for tabbed auth flow
-    implementation("com.google.android.material:material:<latest>")
-    implementation ("androidx.fragment:fragment:1.8.3")
-    implementation ("androidx.recyclerview:recyclerview:1.3.2")
-    implementation ("androidx.viewpager2:viewpager2:1.1.0")
-    implementation ("androidx.cardview:cardview:1.0.0")
-    implementation(libs.firebase.database)
-    implementation("androidx.media3:media3-exoplayer:1.4.1")
-    implementation("androidx.media3:media3-ui:1.4.1")
+    implementation(platform("com.google.firebase:firebase-bom:33.4.0"))
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
+    implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

@@ -7,4 +7,12 @@
     <string name="unfollow_message">Are you sure you want to unfollow?</string>
     <string name="liked">Liked</string>
     <string name="unliked">Unlike</string>
+    <string name="video_empty_state">No videos yet. Add a document to the chicha collection to see it here.</string>
+    <string name="video_error_loading">Unable to load videos right now. Please try again later.</string>
+    <string name="video_missing_id">Some videos could not be shown because their videoId is missing.</string>
+    <string name="video_default_title">Featured video</string>
+    <string name="video_branding_label">Chicha</string>
+    <string name="video_like">Like video</string>
+    <string name="video_comment">Comment on video</string>
+    <string name="video_options">More options</string>
 </resources>
