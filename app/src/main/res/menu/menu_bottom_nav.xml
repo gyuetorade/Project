@@ -1,22 +1,23 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:title="Home"
-        android:icon="@drawable/home" />
+        android:icon="@drawable/home"
+        tools:ignore="MenuTitle" />
     <item
         android:id="@+id/nav_search"
-        android:title="Search"
-        android:icon="@drawable/search" />
+        android:icon="@drawable/search"
+        tools:ignore="MenuTitle" />
     <item
         android:id="@+id/nav_orders"
-        android:title="Cart"
-        android:icon="@drawable/shopping" />
+        android:icon="@drawable/shopping"
+        tools:ignore="MenuTitle" />
     <item
         android:id="@+id/nav_settings"
-        android:title="Settings"
-        android:icon="@drawable/settings" />
+        android:icon="@drawable/settings"
+        tools:ignore="MenuTitle" />
     <item
         android:id="@+id/nav_more"
-        android:title="Other"
-        android:icon="@drawable/other" />
+        android:icon="@drawable/other"
+        tools:ignore="MenuTitle" />
 </menu>
