@@ -14,17 +14,18 @@
             android:id="@+id/actionButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="12dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="160dp"
             android:gravity="center"
             android:orientation="vertical">
 
             <ImageButton
                 android:id="@+id/btnLike"
-                android:layout_width="65dp"
-                android:layout_height="65dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="Like"
+                android:scaleType="centerCrop"
                 android:src="@drawable/heart" />
 
             <TextView
@@ -46,12 +47,12 @@
                 android:contentDescription="Comment"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/comment2" />
+                android:src="@drawable/comment" />
 
             <ImageButton
                 android:id="@+id/btnMenu"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="Menu"
                 android:scaleType="fitCenter"

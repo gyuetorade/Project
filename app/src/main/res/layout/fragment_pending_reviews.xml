@@ -42,7 +42,7 @@
             android:layout_width="160dp"
             android:layout_height="160dp"
             android:contentDescription="No pending reviews"
-            android:src="@drawable/notesnimama" />
+            android:src="@drawable/review" />
 
         <TextView
             android:layout_width="wrap_content"

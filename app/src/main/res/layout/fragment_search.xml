@@ -42,6 +42,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,7 +58,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp"
                 android:weightSum="2">
 
                 <!-- Spicy Chickens Card -->
@@ -161,7 +161,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp"
                 android:weightSum="2">
 
                 <!-- Egg and cucumber... Card -->
@@ -265,9 +264,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp"
                 android:weightSum="2">
-                <!-- Moi-moi and ekpa. Card -->
+
                 <androidx.cardview.widget.CardView
                     android:id="@+id/card5"
                     android:layout_width="0dp"
