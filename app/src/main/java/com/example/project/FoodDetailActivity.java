@@ -74,7 +74,7 @@ public class FoodDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Added To Favorite", Toast.LENGTH_SHORT).show();
         } else {
             // Change to outline heart icon (not favorite state)
-            favButton.setImageResource(R.drawable.heart2); // Make sure you have this drawable
+            favButton.setImageResource(R.drawable.heart);
         }
         Toast.makeText(this, "Removed To Favorite", Toast.LENGTH_SHORT).show();
     }
